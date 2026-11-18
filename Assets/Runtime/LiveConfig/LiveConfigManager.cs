@@ -31,6 +31,10 @@ namespace SDG.Unturned
 
 		public void Refresh()
 		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+			// Browser builds are offline: these servers don't send CORS headers, so the request can never succeed.
+			return;
+#endif
 			if (!isRefreshing)
 			{
 				isRefreshing = true;

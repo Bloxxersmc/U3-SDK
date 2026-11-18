@@ -187,7 +187,13 @@ namespace SDG.Unturned
 		/// <summary>
 		/// Useful to check whether hashing is causing problems.
 		/// </summary>
-		private static CommandLineFlag shouldSkipHashing = new CommandLineFlag(false, "-SkipResourcesHashing");
+		private static CommandLineFlag shouldSkipHashing = new CommandLineFlag(
+#if UNITY_WEBGL && !UNITY_EDITOR
+			true, // Browser builds have no Unturned_Data folder to hash, and only play offline.
+#else
+			false,
+#endif
+			"-SkipResourcesHashing");
 
 		/// <summary>
 		/// Useful to narrow down why a player is getting kicked for modified resource files when joining a server.

@@ -25,6 +25,9 @@ except ImportError:
 
 WEBGL = 20
 CHUNK = 128 * 1024
+# Per-chunk storage flags: low 6 bits = compression (0 none, 3 LZ4HC); 0x40 = "streamed".
+BLOCK_FLAGS_RAW = 0x0
+BLOCK_FLAGS_LZ4 = 0x3
 SKIP_DIRS = {"Unturned_Data", "MonoBleedingEdge", "BattlEye", "Logs", "Servers", "Sandbox", "Extras", "Modules"}
 SKIP_EXT = {".exe", ".dll", ".pdb", ".bat", ".lnk", ".vdf"}
 BUNDLE_EXT = {".masterbundle", ".unity3d"}
@@ -98,9 +101,9 @@ def convert_bundle(src, dst, platform=WEBGL):
                     break
                 c = lz4.block.compress(chunk, mode="high_compression", compression=9, store_size=False)
                 if len(c) >= len(chunk):
-                    packed.write(chunk); blocks.append((len(chunk), len(chunk), 0x40))
+                    packed.write(chunk); blocks.append((len(chunk), len(chunk), BLOCK_FLAGS_RAW))
                 else:
-                    packed.write(c); blocks.append((len(chunk), len(c), 0x43))
+                    packed.write(c); blocks.append((len(chunk), len(c), BLOCK_FLAGS_LZ4))
 
             info = bytearray(16)
             info += struct.pack(">I", len(blocks))
