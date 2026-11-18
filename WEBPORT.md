@@ -53,24 +53,61 @@ To check that a converted bundle loads, without a browser:
 python Tools/WebPort/serve.py WebGL 8765
 ```
 
-Open http://localhost:8765/ in Chrome or Edge, pick your `UnturnedWebData` folder, enter a name, and press Play.
+Open http://localhost:8765/ in Chrome or Edge, pick your `UnturnedWebData` folder, choose maps, and press
+**Play offline** (singleplayer) or **Play online** (the shared server, see below).
 (Port 8080 is reserved on some Windows PCs, so the examples use 8765.)
 
-Shortcuts while testing:
+### Self-contained site folder
+
+`python Tools/WebPort/package_site.py` copies the web build and your `UnturnedWebData` into
+`%USERPROFILE%/Downloads/UnturnedWeb` (with `gamedata/manifest.json`). The page finds the data next to itself and
+skips the folder picker, so any static server works: `cd %USERPROFILE%/Downloads/UnturnedWeb` then
+`python -m http.server 8765`. The game data is SDG's and third parties' content: keep the folder for your own use,
+since publishing it is redistribution, which the SDK license doesn't allow.
+
+### Maps
+
+The start page lists every converted map with its size. Checked maps are read into the tab's memory before the game
+starts. Maps over 200 MB (Russia, Germany) start unchecked. Russia (596 MB) loads fine on its own.
+
+### Shortcuts while testing
 
 - `python Tools/WebPort/serve.py WebGL 8765 --data "%USERPROFILE%/Downloads/UnturnedWebData"` also serves your data
-  folder at `/gamedata/`, on localhost only. Then `http://localhost:8765/?localdata` loads it without the folder picker.
-- `&autoplay` presses Play for you, and `&autoload=PEI` starts singleplayer on that map once the menu is up.
+  folder at `/gamedata/`, on localhost only, and the page picks it up automatically.
+- `?autoplay` presses Play offline (`?autoplay=online` presses Play online), `&autoload=PEI` starts singleplayer on
+  that map once the menu is up, and `&maps=Russia,PEI` (or `all`) picks the maps to load.
+- `&connect=host:port` overrides the online server, and `&account=N` sets the player ID (two test tabs in one browser).
 - Keep the tab visible: browsers throttle background tabs hard, and the game then runs at a frame every few seconds.
+
+## 4. Online play (shared server)
+
+Every web player who presses **Play online** joins one shared dedicated server. Players get a name like
+`Survivor-1234`, which they can change on the start page. Name and a random player ID are kept per browser, so a
+player keeps their character and inventory between visits. The server trims names, limits their length, and adds
+` (2)` and so on if a name is already taken.
+
+The server is a Windows build of this SDK running with the WebSocket transport and `-OfflineOnly` (no Steam login or
+auth tickets). It needs the game's content from **your own** Unturned install: the script links those folders in
+and never copies or changes them.
+
+1. Build once: **Unturned > Web > Build Web Server (Windows)**, or headless
+   `Unity.exe -batchmode -nographics -quit -projectPath . -buildTarget Win64 -executeMethod SDG.Unturned.WebPort.WebBuild.BuildWebServerCommandLine`
+   (output `Builds/WebServer/Unturned.exe`).
+2. Start it: `python Tools/WebPort/server/run_web_server.py --map PEI` (options: `--port 27015`, `--maxplayers 8`,
+   `--name WebPort`, `--install <Unturned install>`). Saves and the log go to `Builds/WebServer/Servers/<name>/`.
+   Run it as a service or a scheduled task to keep it running.
+3. Web players connect to **port + 1** (27016 by default). The page connects to the host it was loaded from on that
+   port. Change `ONLINE_SERVER` near the top of the page script for a different address. Open TCP 27016 in the
+   firewall for other PCs. Pages served over https need `wss://`, i.e. a TLS reverse proxy in front of the game port.
+   Set `ONLINE_SERVER` to e.g. `wss://example.com/unturned-ws`.
+
+The SDK FAQ notes that fork servers aren't on the public server list, so direct connection like this is the way in.
+Normal Unturned (Steam) clients can't join a WebSocket server, and web clients can't join normal servers.
 
 ## Known gaps / next steps
 
-- **Some textures load without pixel data** ("The image data of Texture ... has an unexpected size (expected N,
-  got 0)"). Character skins and UI icons are affected, so the menu character renders grey.
-  The same bundle loads fine in the Unity 6 editor, so the problem is specific to the WebGL player.
 - **No sound:** the Windows bundles store audio as FMOD (Vorbis), which browsers can't decode.
   The converter would have to re-encode clips (e.g. to AAC).
-- Multiplayer: not supported. It would need a WebSocket/WebRTC transport and a server that accepts it.
 - Pathfinding (A*), BattlEye and other third-party pieces that the SDK leaves out stay disabled, as in SDK builds.
 - Exceptions are built with full stack traces while startup is being debugged; switch `WebBuild.cs` back to
   `ExplicitlyThrownExceptionsOnly` for a smaller, faster build.
