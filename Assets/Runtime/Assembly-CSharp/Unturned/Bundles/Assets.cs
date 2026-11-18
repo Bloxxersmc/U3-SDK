@@ -2583,15 +2583,21 @@ namespace SDG.Unturned
 
 				// Test builds can still host dedicated server for convenience.
 #if !DEDICATED_SERVER && !UNITY_EDITOR && !DEVELOPMENT_BUILD
-				CommandWindow.LogError("Hosting dedicated servers using client files has been deprecated since June 2019.");
-				CommandWindow.Log("Please use the standalone dedicated server app ID 1110390 available through SteamCMD instead.");
-				CommandWindow.Log("For more information and an installation guide read more at:");
-				CommandWindow.Log("https://docs.smartlydressedgames.com/en/stable/servers/server-hosting.html");
-				return; // Abort startup.
+				// Web port: offline-only servers (WebSocket transport for browser players) never log in to Steam,
+				// so they may run from this build.
+				if (!Dedicator.offlineOnly)
+				{
+					CommandWindow.LogError("Hosting dedicated servers using client files has been deprecated since June 2019.");
+					CommandWindow.Log("Please use the standalone dedicated server app ID 1110390 available through SteamCMD instead.");
+					CommandWindow.Log("For more information and an installation guide read more at:");
+					CommandWindow.Log("https://docs.smartlydressedgames.com/en/stable/servers/server-hosting.html");
+					return; // Abort startup.
+				}
 #endif // !DEDICATED_SERVER && !UNITY_EDITOR && !DEVELOPMENT_BUILD
 
 				// AFTER the client-as-server error, whoops the initial Steam redist error update was confusing.
-				if (!TestDedicatedServerSteamRedist())
+				// Offline-only servers don't use the Steam game server API, so they don't need the redist.
+				if (!Dedicator.offlineOnly && !TestDedicatedServerSteamRedist())
 				{
 					return; // Abort startup.
 				}

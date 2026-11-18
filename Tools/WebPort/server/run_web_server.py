@@ -35,6 +35,7 @@ def main():
     ap.add_argument("--map", default="PEI")
     ap.add_argument("--port", type=int, default=27015, help="server port; web players connect to port + 1")
     ap.add_argument("--maxplayers", type=int, default=8)
+    ap.add_argument("--extra", nargs="*", default=[], help="extra server arguments, e.g. --extra -LogBadMessages")
     a = ap.parse_args()
 
     exe = os.path.join(SERVER_DIR, "Unturned.exe")
@@ -57,8 +58,9 @@ def main():
     with open(os.path.join(server_cfg, "Commands.dat"), "w", encoding="utf-8") as f:
         f.write(f"Name {a.name}\nMap {a.map}\nPort {a.port}\nMaxPlayers {a.maxplayers}\nPerspective Both\nMode Normal\n")
 
-    args = [exe, "-batchmode", "-nographics", "-OfflineOnly", "-NetTransport", "WebSocket", f"+LanServer/{a.name}",
-            "-logFile", os.path.join(SERVER_DIR, "Servers", a.name, "Server.log")]
+    # Unturned reads everything after +LanServer/ as the server id, so it has to come last.
+    args = [exe, "-batchmode", "-nographics", "-OfflineOnly", "-NetTransport", "WebSocket",
+            "-logFile", os.path.join(SERVER_DIR, "Servers", a.name, "Server.log")] + a.extra + [f"+LanServer/{a.name}"]
     print(f"Starting {a.name} on {a.map}; web players connect to <this PC>:{a.port + 1}")
     print("Log:", os.path.join(SERVER_DIR, "Servers", a.name, "Server.log"))
     sys.exit(subprocess.call(args, cwd=SERVER_DIR))

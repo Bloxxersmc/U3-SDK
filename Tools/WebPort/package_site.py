@@ -19,6 +19,9 @@ def main():
     ap.add_argument("--build", default=os.path.join(ROOT, "Builds", "Web", "WebGL"))
     ap.add_argument("--data", default=os.path.join(HOME, "Downloads", "UnturnedWebData"))
     ap.add_argument("--out", default=os.path.join(HOME, "Downloads", "UnturnedWeb"))
+    ap.add_argument("--install", default=r"C:\Program Files (x86)\Steam\steamapps\common\Unturned",
+                    help="your Unturned install (used by the online server)")
+    ap.add_argument("--map", default="PEI", help="map for the online server")
     a = ap.parse_args()
     build, data, out = (os.path.abspath(p) for p in (a.build, a.data, a.out))
     if not os.path.exists(os.path.join(build, "index.html")):
@@ -52,9 +55,16 @@ def main():
             files.append({"path": rel.replace(os.sep, "/"), "size": size})
     with open(os.path.join(gd, "manifest.json"), "w", encoding="utf-8") as f:
         json.dump({"files": files}, f)
+    # One-click launcher: serves this folder on localhost, starts the online server, opens the browser.
+    launcher = os.path.join(os.path.dirname(os.path.abspath(__file__)), "launcher")
+    for name in ("launch.py", "Start Unturned.bat", "README.txt"):
+        shutil.copy2(os.path.join(launcher, name), os.path.join(out, name))
+    with open(os.path.join(out, "launcher.json"), "w", encoding="utf-8") as f:
+        json.dump({"sdk": ROOT, "install": a.install, "map": a.map}, f, indent=2)
+
     total = sum(f["size"] for f in files)
     print(f"Site ready at {out}: {len(files)} game files ({total / 1048576:.0f} MB, {copied} copied this run)")
-    print(f"Try it:  cd \"{out}\"  then  python -m http.server 8765  and open http://localhost:8765/")
+    print(f"Start it: double-click \"{os.path.join(out, 'Start Unturned.bat')}\"")
 
 
 if __name__ == "__main__":
