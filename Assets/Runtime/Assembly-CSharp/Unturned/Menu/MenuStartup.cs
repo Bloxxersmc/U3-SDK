@@ -50,10 +50,43 @@ namespace SDG.Unturned
 				}
 			}
 #endif // UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
+			// Web builds: index.html?autoload=PEI starts that map in singleplayer once the menu is up
+			// (for testing, and for links that should drop straight into a map).
+			if (!didAlreadyAutoLoad)
+			{
+				didAlreadyAutoLoad = true;
+				string autoLoadLevel = GetWebQueryParameter("autoload");
+				if (!string.IsNullOrEmpty(autoLoadLevel))
+				{
+					UnturnedLog.info($"Web autoload: starting singleplayer on {autoLoadLevel}");
+					Provider.map = autoLoadLevel;
+					Provider.singleplayer(EGameMode.NORMAL, true);
+				}
+			}
+#endif // UNITY_WEBGL && !UNITY_EDITOR
 		}
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || UNITY_WEBGL
 		private static bool didAlreadyAutoLoad = false;
-#endif // UNITY_EDITOR
+#endif // UNITY_EDITOR || UNITY_WEBGL
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+		private static string GetWebQueryParameter(string key)
+		{
+			string url = Application.absoluteURL;
+			int q = url != null ? url.IndexOf('?') : -1;
+			if (q < 0)
+				return null;
+			foreach (string pair in url.Substring(q + 1).Split('&'))
+			{
+				int eq = pair.IndexOf('=');
+				string k = eq >= 0 ? pair.Substring(0, eq) : pair;
+				if (k == key)
+					return eq >= 0 ? System.Uri.UnescapeDataString(pair.Substring(eq + 1)) : string.Empty;
+			}
+			return null;
+		}
+#endif // UNITY_WEBGL && !UNITY_EDITOR
 	}
 }
