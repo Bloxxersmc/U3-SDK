@@ -51,6 +51,46 @@ namespace SDG.Unturned.WebPort
 
 		public static void BuildWebGPUCommandLine() => ExitWith(Build(useWebGPU: true));
 
+		/// <summary>
+		/// TextMeshPro inside uGUI 2.x (Unity 6) needs "TMP Settings" in Resources or text components throw.
+		/// Imports TMP Essential Resources from the uGUI package if they aren't in the project yet.
+		///   Unity.exe -batchmode -quit -projectPath . -executeMethod SDG.Unturned.WebPort.WebBuild.ImportTMPEssentialsCommandLine
+		/// </summary>
+		[MenuItem("Unturned/Web/Import TMP Essential Resources")]
+		public static void ImportTMPEssentialsCommandLine()
+		{
+			if (AssetDatabase.FindAssets("t:TMP_Settings").Length > 0)
+			{
+				Debug.Log("[WebBuild] TMP Settings already in the project");
+				return;
+			}
+			UnityEditor.PackageManager.PackageInfo ugui = UnityEditor.PackageManager.PackageInfo.FindForAssetPath("Packages/com.unity.ugui");
+			string path = ugui != null ? Path.Combine(ugui.resolvedPath, "Package Resources", "TMP Essential Resources.unitypackage") : null;
+			if (path == null || !File.Exists(path))
+			{
+				Debug.LogError("[WebBuild] TMP Essential Resources.unitypackage not found in com.unity.ugui");
+				return;
+			}
+			AssetDatabase.ImportPackage(path, false);
+			Debug.Log("[WebBuild] Importing TMP Essential Resources from " + path);
+			if (Application.isBatchMode)
+			{
+				// Package import completes on later editor updates; run this WITHOUT -quit and it exits when done.
+				double deadline = EditorApplication.timeSinceStartup + 600.0;
+				EditorApplication.update += WaitForTMPImport;
+				void WaitForTMPImport()
+				{
+					bool done = AssetDatabase.FindAssets("t:TMP_Settings").Length > 0;
+					if (done || EditorApplication.timeSinceStartup > deadline)
+					{
+						EditorApplication.update -= WaitForTMPImport;
+						Debug.Log(done ? "[WebBuild] TMP Essential Resources imported" : "[WebBuild] Timed out waiting for TMP import");
+						EditorApplication.Exit(done ? 0 : 1);
+					}
+				}
+			}
+		}
+
 		private static void ExitWith(bool success)
 		{
 			if (Application.isBatchMode)
@@ -119,7 +159,7 @@ namespace SDG.Unturned.WebPort
 
 			PlayerSettings.WebGL.template = "PROJECT:Unturned";
 			PlayerSettings.WebGL.linkerTarget = WebGLLinkerTarget.Wasm;
-			PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.ExplicitlyThrownExceptionsOnly;
+			PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithStacktrace; // to-do: back to ExplicitlyThrownExceptionsOnly once startup is stable
 			PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Brotli;
 			PlayerSettings.WebGL.decompressionFallback = true;
 			PlayerSettings.WebGL.dataCaching = true;

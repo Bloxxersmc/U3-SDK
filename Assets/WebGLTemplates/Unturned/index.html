@@ -99,6 +99,23 @@
       var s = $("gpu-status"); s.textContent = parts.join(" · "); s.className = "status " + (gl ? "ok" : "bad");
     })();
 
+    // Dev/local mode: http://localhost:8080/?localdata loads the folder that serve.py --data serves at /gamedata/.
+    if (/[?&]localdata\b/.test(location.search)) {
+      fetch("gamedata/manifest.json").then(function (r) { return r.json(); }).then(function (m) {
+        var total = 0;
+        picked = m.files.map(function (f) {
+          total += f.size;
+          return { path: f.path, file: { size: f.size, arrayBuffer: function () {
+            return fetch("gamedata/" + f.path.split("/").map(encodeURIComponent).join("/")).then(function (r) {
+              if (!r.ok) throw new Error(f.path + ": HTTP " + r.status); return r.arrayBuffer(); }); } } };
+        });
+        var s = $("folder-status");
+        s.textContent = "Local game data: " + picked.length + " files, " + Math.round(total / 1048576) + " MB (from serve.py --data)";
+        s.className = "status ok"; playBtn.disabled = false;
+        if (/[?&]autoplay\b/.test(location.search)) playBtn.click();
+      }, function (e) { var s = $("folder-status"); s.textContent = "?localdata: no data served (" + e + ")"; s.className = "status bad"; });
+    }
+
     $("pick-btn").addEventListener("click", function () { folderInput.click(); });
     $("pick-btn").addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") folderInput.click(); });
 
@@ -155,8 +172,46 @@
       });
     }
 
+    // Saves (Worlds/, Cloud/) live in IndexedDB: loaded before the engine starts, written back by
+    // UnturnedWebFS.jslib every 15 s and when the tab is hidden or closed.
+    function openSaveDb() {
+      return new Promise(function (resolve, reject) {
+        var req = indexedDB.open("UnturnedWebSaves", 1);
+        req.onupgradeneeded = function () { req.result.createObjectStore("files"); };
+        req.onsuccess = function () { resolve(req.result); };
+        req.onerror = function () { reject(req.error); };
+      });
+    }
+    function loadSaves() {
+      return openSaveDb().then(function (db) {
+        return new Promise(function (resolve) {
+          var out = [], tx = db.transaction("files", "readonly"), cur = tx.objectStore("files").openCursor();
+          cur.onsuccess = function () {
+            var c = cur.result;
+            if (c) { out.push({ path: c.key, data: new Uint8Array(c.value), save: true }); c.continue(); }
+            else resolve(out);
+          };
+          cur.onerror = function () { resolve(out); };
+        });
+      }).catch(function (e) { console.warn("[Unturned web] no saves loaded", e); return []; });
+    }
+    window.unturnedStoreSaves = function (changed) {
+      openSaveDb().then(function (db) {
+        var tx = db.transaction("files", "readwrite"), store = tx.objectStore("files");
+        changed.forEach(function (f) { store.put(f.data.slice().buffer, f.path); });
+        tx.oncomplete = function () { console.log("[Unturned web] saved " + changed.length + " file(s)"); };
+      }).catch(function (e) { console.warn("[Unturned web] saving failed", e); });
+    };
+
     function startGame(files) {
-      window.unturnedWebFiles = files;
+      setProgress("Loading saves…", 0.5);
+      loadSaves().then(function (saves) {
+        window.unturnedWebFiles = files.concat(saves);
+        launchEngine();
+      });
+    }
+
+    function launchEngine() {
       setProgress("Starting engine…", 0.5);
       var script = document.createElement("script");
       script.src = buildUrl + "/{{{ LOADER_FILENAME }}}";

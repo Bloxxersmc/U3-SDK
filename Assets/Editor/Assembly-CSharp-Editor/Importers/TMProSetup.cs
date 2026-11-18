@@ -32,6 +32,11 @@ public static class TMProSetup
 		importPath = Path.Join(importPath, "Package Resources", "TMP Essential Resources.unitypackage");
 		if (!File.Exists(importPath))
 		{
+			// Unity 6: TextMesh Pro ships inside com.unity.ugui (2.x).
+			importPath = Path.Join(Path.GetFullPath(Path.Join("Packages", "com.unity.ugui")), "Package Resources", "TMP Essential Resources.unitypackage");
+		}
+		if (!File.Exists(importPath))
+		{
 			Debug.LogError($"Expected to find TextMesh Pro essential resources package at: {importPath}");
 			return;
 		}

@@ -6774,8 +6774,10 @@ namespace SDG.Unturned
 			backendRealtimeSeconds = SteamUtils.GetServerRealTime();
 			authorityHoliday = HolidayUtil.GetScheduledHoliday();
 
+#if !UNITY_WEBGL // Native callback; pointless with the offline Steam stubs and needs MonoPInvokeCallback under IL2CPP.
 			apiWarningMessageHook = new Steamworks.SteamAPIWarningMessageHook_t(onAPIWarningMessage);
 			SteamUtils.SetWarningMessageHook(apiWarningMessageHook);
+#endif
 
 			screenshotRequestedCallback = Callback<ScreenshotRequested_t>.Create(OnSteamScreenshotRequested);
 			SteamScreenshots.HookScreenshots(true);

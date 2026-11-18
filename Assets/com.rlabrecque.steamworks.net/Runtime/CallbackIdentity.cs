@@ -14,7 +14,7 @@
 namespace Steamworks {
 	class CallbackIdentities {
 		public static int GetCallbackIdentity(System.Type callbackStruct) {
-#if UNITY_EDITOR || UNITY_STANDALONE || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX
+#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBGL || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX
 			foreach (CallbackIdentityAttribute attribute in callbackStruct.GetCustomAttributes(typeof(CallbackIdentityAttribute), false)) {
 				return attribute.Identity;
 			}

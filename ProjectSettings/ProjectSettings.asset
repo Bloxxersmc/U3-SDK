@@ -642,7 +642,7 @@ PlayerSettings:
   blurSplashScreenBackground: 1
   spritePackerPolicy: 
   webGLMemorySize: 256
-  webGLExceptionSupport: 1
+  webGLExceptionSupport: 3
   webGLNameFilesAsHashes: 0
   webGLShowDiagnostics: 0
   webGLDataCaching: 1
@@ -687,7 +687,7 @@ PlayerSettings:
     Stadia: UNITY_POST_PROCESSING_STACK_V2
     Standalone: GAME;UNITY_POST_PROCESSING_STACK_V2;WITH_GRANTPACKAGE_PROMO;STEAMWORKS_NET
     VisionOS: UNITY_POST_PROCESSING_STACK_V2
-    WebGL: GAME;UNITY_POST_PROCESSING_STACK_V2;STEAMWORKS_NET
+    WebGL: GAME;UNITY_POST_PROCESSING_STACK_V2;STEAMWORKS_NET;USE_UNITY_LOG
     Windows Store Apps: UNITY_POST_PROCESSING_STACK_V2
     XboxOne: UNITY_POST_PROCESSING_STACK_V2
     iPhone: UNITY_POST_PROCESSING_STACK_V2

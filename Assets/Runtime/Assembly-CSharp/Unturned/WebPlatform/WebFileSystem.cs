@@ -31,9 +31,28 @@ namespace SDG.Unturned
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
 		private static void MountBeforeGameStarts()
 		{
+			DisableJsonDynamicCode();
 			MountedFileCount = WebFS_MountGameFiles();
 			WebSteam_SetPlayerName(WebFS_GetPlayerName());
 			Debug.Log($"[WebFileSystem] {MountedFileCount} game files mounted at /unturned");
+		}
+
+		/// <summary>
+		/// Json.NET builds object constructors with Reflection.Emit unless told not to, and IL2CPP
+		/// (browser builds) can't run generated code. Make it use plain reflection instead.
+		/// </summary>
+		private static void DisableJsonDynamicCode()
+		{
+			System.Type reflector = typeof(Newtonsoft.Json.JsonConvert).Assembly.GetType("Newtonsoft.Json.Serialization.JsonTypeReflector");
+			System.Reflection.FieldInfo field = reflector?.GetField("_dynamicCodeGeneration", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+			if (field != null)
+			{
+				field.SetValue(null, (bool?) false);
+			}
+			else
+			{
+				Debug.LogWarning("[WebFileSystem] Could not turn off Json.NET dynamic code generation; JSON files may fail to load");
+			}
 		}
 
 		/// <summary>

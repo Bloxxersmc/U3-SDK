@@ -58,10 +58,12 @@ namespace Steamworks {
 				m_VTServerFailedToRespond = InternalOnServerFailedToRespond,
 				m_VTRefreshComplete = InternalOnRefreshComplete
 			};
+#if !UNITY_WEBGL // IL2CPP on the web can't pass instance-method delegates to native code; Steam is stubbed there anyway.
 			m_pVTable = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(VTable)));
 			Marshal.StructureToPtr(m_VTable, m_pVTable, false);
 
 			m_pGCHandle = GCHandle.Alloc(m_pVTable, GCHandleType.Pinned);
+#endif
 		}
 
 		~ISteamMatchmakingServerListResponse() {
@@ -204,10 +206,12 @@ namespace Steamworks {
 				m_VTServerResponded = InternalOnServerResponded,
 				m_VTServerFailedToRespond = InternalOnServerFailedToRespond,
 			};
+#if !UNITY_WEBGL // IL2CPP on the web can't pass instance-method delegates to native code; Steam is stubbed there anyway.
 			m_pVTable = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(VTable)));
 			Marshal.StructureToPtr(m_VTable, m_pVTable, false);
 
 			m_pGCHandle = GCHandle.Alloc(m_pVTable, GCHandleType.Pinned);
+#endif
 		}
 
 		~ISteamMatchmakingPingResponse() {
@@ -303,10 +307,12 @@ namespace Steamworks {
 				m_VTPlayersFailedToRespond = InternalOnPlayersFailedToRespond,
 				m_VTPlayersRefreshComplete = InternalOnPlayersRefreshComplete
 			};
+#if !UNITY_WEBGL // IL2CPP on the web can't pass instance-method delegates to native code; Steam is stubbed there anyway.
 			m_pVTable = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(VTable)));
 			Marshal.StructureToPtr(m_VTable, m_pVTable, false);
 
 			m_pGCHandle = GCHandle.Alloc(m_pVTable, GCHandleType.Pinned);
+#endif
 		}
 
 		~ISteamMatchmakingPlayersResponse() {
@@ -416,10 +422,12 @@ namespace Steamworks {
 				m_VTRulesFailedToRespond = InternalOnRulesFailedToRespond,
 				m_VTRulesRefreshComplete = InternalOnRulesRefreshComplete
 			};
+#if !UNITY_WEBGL // IL2CPP on the web can't pass instance-method delegates to native code; Steam is stubbed there anyway.
 			m_pVTable = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(VTable)));
 			Marshal.StructureToPtr(m_VTable, m_pVTable, false);
 
 			m_pGCHandle = GCHandle.Alloc(m_pVTable, GCHandleType.Pinned);
+#endif
 		}
 
 		~ISteamMatchmakingRulesResponse() {
