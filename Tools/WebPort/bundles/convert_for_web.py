@@ -37,6 +37,94 @@ def write_cstr(f, s):
     f.write(s.encode() + b"\0")
 
 
+# Textures whose streamed pixel data is at most this size get it moved inline. The WebGL player
+# loaded small streamed textures with no pixels ("The image data of Texture ... has an unexpected
+# size (expected N, got 0)") while large ones were fine; inline data takes the path that works.
+INLINE_TEXTURE_BYTES = 256 * 1024
+
+
+def inline_small_textures(raw, nodes, threshold):
+    """
+    raw: file with the bundle's uncompressed data stream. Returns (new_raw or None, new_nodes, count).
+    Only format 22+ serialized files with type trees are rewritten; anything else is left as is.
+    """
+    from serialized import SerializedFile
+    sf_nodes = [n for n in nodes if n[3] & 4]
+    if len(sf_nodes) != 1:
+        return None, nodes, 0
+    name, off, size, flags = sf_nodes[0]
+    raw.seek(off)
+    buf = raw.read(size)
+    try:
+        sf = SerializedFile(buf)
+    except Exception:
+        return None, nodes, 0
+    by_name = {n[0]: n for n in nodes}
+    res_name = name + ".resS"
+    if res_name not in by_name:
+        return None, nodes, 0
+    res_off = by_name[res_name][1]
+
+    new_blobs, count = [], 0
+    for obj in sf.objects:
+        pid, start, osize, tid = obj
+        blob = buf[sf.data_offset + start:sf.data_offset + start + osize]
+        cls, root = sf.types[tid]
+        if root is not None and root.type == "Texture2D":
+            spans = sf.field_spans(obj)
+            _, v = sf.read_object(obj)
+            sd = v.get("m_StreamData") or {}
+            img = v.get("image data")
+            if ("image data" in spans and "m_StreamData" in spans and isinstance(img, tuple) and img[1] == 0
+                    and 0 < sd.get("size", 0) <= threshold and sd.get("path", "").endswith(res_name)):
+                raw.seek(res_off + sd["offset"])
+                pixels = raw.read(sd["size"])
+                i0, i1 = spans["image data"]
+                s0, s1 = spans["m_StreamData"]
+                e = sf.e
+                img_bytes = struct.pack(e + "i", len(pixels)) + pixels
+                img_bytes += b"\0" * ((4 - len(img_bytes) % 4) % 4)
+                # StreamingInfo: offset (UInt64), size (UInt32), path (string, empty).
+                sd_bytes = struct.pack(e + "QIi", 0, 0, 0)
+                blob = blob[:i0] + img_bytes + blob[i1:s0] + sd_bytes + blob[s1:]
+                count += 1
+        new_blobs.append(blob)
+    if not count:
+        return None, nodes, 0
+
+    new_sf = sf.rebuild(new_blobs)
+    delta = len(new_sf) - size
+    out = tempfile.TemporaryFile()
+    raw.seek(0)
+    shutil.copyfileobj(_LimitedReader(raw, off), out)
+    out.write(new_sf)
+    raw.seek(off + size)
+    shutil.copyfileobj(raw, out, 16 * 1024 * 1024)
+    new_nodes = []
+    for n in nodes:
+        nname, noff, nsize, nflags = n
+        if nname == name:
+            new_nodes.append((nname, noff, len(new_sf), nflags))
+        elif noff > off:
+            new_nodes.append((nname, noff + delta, nsize, nflags))
+        else:
+            new_nodes.append(n)
+    return out, new_nodes, count
+
+
+class _LimitedReader:
+    def __init__(self, f, n):
+        self.f, self.left = f, n
+
+    def read(self, size=-1):
+        if self.left <= 0:
+            return b""
+        size = self.left if size < 0 else min(size, self.left)
+        data = self.f.read(size)
+        self.left -= len(data)
+        return data
+
+
 def convert_bundle(src, dst, platform=WEBGL):
     b = Bundle(src)
     if b.signature == "UnityRaw":
@@ -91,6 +179,16 @@ def convert_bundle(src, dst, platform=WEBGL):
                 raw.write(struct.pack("<i", platform))
                 patched += 1
 
+        # 2b. Small textures: move their pixels from the .resS stream into the object itself.
+        nodes = list(b.nodes)
+        inlined = 0
+        if INLINE_TEXTURE_BYTES > 0:
+            new_raw, nodes, inlined = inline_small_textures(raw, nodes, INLINE_TEXTURE_BYTES)
+            if new_raw is not None:
+                raw.close()
+                raw = new_raw
+                print(f"  {os.path.basename(src)}: moved {inlined} small texture(s) inline")
+
         # 3. Recompress as 128 KiB LZ4 chunks (what Unity's ChunkBasedCompression produces).
         blocks = []
         with tempfile.TemporaryFile() as packed:
@@ -109,8 +207,8 @@ def convert_bundle(src, dst, platform=WEBGL):
             info += struct.pack(">I", len(blocks))
             for u, c, fl in blocks:
                 info += struct.pack(">IIH", u, c, fl)
-            info += struct.pack(">I", len(b.nodes))
-            for name, off, size, flags in b.nodes:
+            info += struct.pack(">I", len(nodes))
+            for name, off, size, flags in nodes:
                 info += struct.pack(">qqI", off, size, flags) + name.encode() + b"\0"
             cinfo = lz4.block.compress(bytes(info), mode="high_compression", compression=9, store_size=False)
 

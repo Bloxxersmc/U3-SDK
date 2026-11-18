@@ -27,7 +27,12 @@ def lz4_block_decompress(src, usize):
 
 def decompress(data, usize, comp):
     if comp == 0: return data
-    if comp in (2, 3): return lz4_block_decompress(data, usize)
+    if comp in (2, 3):
+        try:
+            import lz4.block
+            return lz4.block.decompress(data, uncompressed_size=usize)
+        except ImportError:
+            return lz4_block_decompress(data, usize)
     if comp == 1:
         import lzma
         props, dsize = data[:5], usize
