@@ -115,7 +115,7 @@ namespace SDG.Unturned
 		public string getAssetBundlePath()
 		{
 			string platformBundleName;
-#if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE_WIN || UNITY_WEBGL
 			platformBundleName = assetBundleName;
 #elif UNITY_STANDALONE_OSX
 			platformBundleName = MasterBundleHelper.getMacAssetBundleName(assetBundleName);

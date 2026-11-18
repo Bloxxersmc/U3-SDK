@@ -1590,7 +1590,7 @@ namespace SDG.Unturned
 						canCurrentlyHandleClientTransportFailure = true;
 
 						EClientPlatform clientPlatform;
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_WEBGL
 						clientPlatform = EClientPlatform.Windows;
 #elif UNITY_STANDALONE_OSX
 						clientPlatform = EClientPlatform.Mac;
@@ -2390,7 +2390,7 @@ namespace SDG.Unturned
 				threadState.filePath = v2FilePath;
 				threadState.rootDictionary = dictionaryToWrite;
 				threadState.watch = watch;
-				System.Threading.ThreadPool.QueueUserWorkItem(WriteGameplayConfigOnWorkerThread, threadState);
+				WebThreadPool.QueueUserWorkItem(WriteGameplayConfigOnWorkerThread, threadState);
 			}
 		}
 

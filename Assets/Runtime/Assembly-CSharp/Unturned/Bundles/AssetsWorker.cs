@@ -109,8 +109,8 @@ namespace SDG.Unturned
 				origin = origin,
 			};
 			state.datParser.EnableMetadata = Assets.shouldParseMetadata;
-			ThreadPool.QueueUserWorkItem(SearcherThreadMain, state);
-			ThreadPool.QueueUserWorkItem(ReaderThreadMain, state);
+			WebThreadPool.QueueUserWorkItem(SearcherThreadMain, state);
+			WebThreadPool.QueueUserWorkItem(ReaderThreadMain, state);
 
 #if LOG_ASSETS_WORKER
 			UnturnedLog.info("Main thread path queued: " + path);

@@ -39,7 +39,7 @@ namespace SDG.Unturned
 			}
 			state.watch = System.Diagnostics.Stopwatch.StartNew();
 
-			System.Threading.ThreadPool.QueueUserWorkItem(ThreadInitialize, state);
+			WebThreadPool.QueueUserWorkItem(ThreadInitialize, state);
 		}
 
 		/// <param name="dataPath">Unturned_Data folder path</param>

@@ -97,16 +97,29 @@ namespace SDG.Framework.Foliage
 				{
 					shouldWorkerThreadContinue = true;
 					lockObject = new object();
+#if UNITY_WEBGL && !UNITY_EDITOR
+					// Browsers have no threads here: run the worker's loop body once per Update instead.
+					useMainThreadWorker = true;
+					perAssetDataPool = new Stack<TilePerAssetData>();
+					tileDataPool = new Stack<TileData>();
+#else
 					workerThread = new Thread(new ThreadStart(WorkerThreadMain));
 					workerThread.Name = "Foliage Storage Thread";
 					workerThread.Start();
+#endif
 				}
 			}
 		}
 
 		public void Shutdown()
 		{
-			if (workerThread != null)
+			if (useMainThreadWorker)
+			{
+				shouldWorkerThreadContinue = false;
+				useMainThreadWorker = false;
+				CloseReader();
+			}
+			else if (workerThread != null)
 			{
 				shouldWorkerThreadContinue = false;
 			}
@@ -143,9 +156,14 @@ namespace SDG.Framework.Foliage
 
 		public void Update()
 		{
-			UnityEngine.Debug.Assert(hasAllTilesInMemory ^ (workerThread != null));
-			if (workerThread == null)
+			UnityEngine.Debug.Assert(hasAllTilesInMemory ^ (workerThread != null || useMainThreadWorker));
+			if (workerThread == null && !useMainThreadWorker)
 				return;
+
+			if (useMainThreadWorker)
+			{
+				MainThreadWorkerStep();
+			}
 
 			TileData tileDataToLoad = null;
 
@@ -592,6 +610,39 @@ namespace SDG.Framework.Foliage
 				readerStream.Close();
 				readerStream.Dispose();
 				readerStream = null;
+			}
+		}
+
+		private bool useMainThreadWorker = false;
+
+		/// <summary>
+		/// Single-threaded stand-in for WorkerThreadMain (WebGL). Reads at most one requested tile per call.
+		/// </summary>
+		private void MainThreadWorkerStep()
+		{
+			foreach (TileData tileData in tileDataFromMainThread)
+			{
+				foreach (TilePerAssetData perAssetData in tileData.perAssetData)
+				{
+					perAssetData.matrices.Clear();
+					perAssetData.clearWhenBaked.Clear();
+					perAssetDataPool.Push(perAssetData);
+				}
+
+				tileData.perAssetData.Clear();
+				tileDataPool.Push(tileData);
+			}
+			tileDataFromMainThread.Clear();
+
+			if (workerThreadTileQueue.Count > 0)
+			{
+				FoliageCoord requestedCoord = workerThreadTileQueue.First.Value;
+				workerThreadTileQueue.RemoveFirst();
+				TileData loaded = GetTileDataOnWorkerThread(requestedCoord);
+				if (loaded != null)
+				{
+					tileDataFromWorkerThread.Enqueue(loaded);
+				}
 			}
 		}
 

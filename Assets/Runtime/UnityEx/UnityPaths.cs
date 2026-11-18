@@ -44,7 +44,12 @@ namespace Unturned.UnityEx
 			TempDirectory = ProjectDirectory.CreateSubdirectory("Temp");
 			LibraryDirectory = ProjectDirectory.CreateSubdirectory("Library");
 #else //!UNITY_EDITOR
-#if UNITY_STANDALONE_OSX
+#if UNITY_WEBGL
+			// Browser builds: Application.dataPath is a URL. The web loader (WebTemplates/Unturned) mounts
+			// the game files into Emscripten's virtual file system at /unturned before the player starts.
+			GameDirectory = new DirectoryInfo("/unturned");
+			GameDataDirectory = new DirectoryInfo("/unturned/Unturned_Data");
+#elif UNITY_STANDALONE_OSX
 			// MacOS Application.dataPath is <path to player app bundle>/Contents
 			GameDirectory = new DirectoryInfo(Application.dataPath).Parent.Parent;
 			GameDataDirectory = new DirectoryInfo(Path.Join(Application.dataPath, "Resources", "Data"));
@@ -55,7 +60,7 @@ namespace Unturned.UnityEx
 #endif // UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX
 #endif // !UNITY_EDITOR
 
-#if DEVELOPMENT_BUILD && !UNITY_EDITOR
+#if DEVELOPMENT_BUILD && !UNITY_EDITOR && !UNITY_WEBGL
 			// Search up the file hierarchy for a Unity project.
 			DirectoryInfo ProjectSearchDirectory = GameDirectory;
 			do

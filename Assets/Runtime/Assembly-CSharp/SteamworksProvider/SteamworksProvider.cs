@@ -108,7 +108,10 @@ namespace SDG.SteamworksProvider
 					throw new Exception("Steam API initialization failed.");
 				}
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD || !WITH_NOREDIST
+#if UNITY_WEBGL && !UNITY_EDITOR
+				// No Steam client in the browser: core Bundles/Maps are mounted with the rest of the game files.
+				SDG.Unturned.Provider.steamAppInstallDirectory = SDG.Unturned.UnturnedPaths.RootDirectory;
+#elif UNITY_EDITOR || DEVELOPMENT_BUILD || !WITH_NOREDIST
 				string appInstallDir;
 				uint appInstallDirLength = SteamApps.GetAppInstallDir((AppId_t) appInfo.id, out appInstallDir, /*bufferSize*/ 1024);
 				if (appInstallDirLength > 0)
