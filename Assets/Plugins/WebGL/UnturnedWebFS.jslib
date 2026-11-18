@@ -73,6 +73,13 @@ mergeInto(LibraryManager.library, {
     if (typeof window !== "undefined" && window.unturnedSaveNow) window.unturnedSaveNow();
   },
 
+  // Random per-browser account number (1 .. 2^31-1) chosen by the page and kept in localStorage,
+  // so every web player gets their own SteamID on servers.
+  WebFS_GetAccountId: function () {
+    var id = (typeof window !== "undefined" && window.unturnedAccountId) | 0;
+    return id > 0 ? id : 1;
+  },
+
   WebFS_GetPlayerName: function () {
     var name = (typeof window !== "undefined" && window.unturnedPlayerName) || "Player";
     var size = lengthBytesUTF8(name) + 1;

@@ -285,6 +285,14 @@ namespace SDG.Unturned
 				characterID = 0;
 			}
 
+			if (Dedicator.offlineOnly)
+			{
+				// Web/offline servers: players have no Steam profile, so their chosen name is also their character
+				// name, and names are kept unique among connected players.
+				playerName = WebPlayerNames.MakeUnique(playerName, steamID);
+				characterName = playerName;
+			}
+
 			SteamPlayerID playerID = new SteamPlayerID(steamID, characterID, playerName, characterName, nickname, groupID, hwids);
 
 			if (!Provider.canClientVersionJoinServer(packedVersion))

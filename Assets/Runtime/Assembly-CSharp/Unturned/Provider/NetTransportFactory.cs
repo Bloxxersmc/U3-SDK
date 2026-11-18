@@ -6,6 +6,7 @@ using SDG.NetTransport;
 using SDG.NetTransport.SteamNetworking;
 using SDG.NetTransport.SteamNetworkingSockets;
 using SDG.NetTransport.SystemSockets;
+using SDG.NetTransport.WebSocket;
 using System;
 
 namespace SDG.Unturned
@@ -18,6 +19,7 @@ namespace SDG.Unturned
 		internal const string SystemSocketsTag = "sys";
 		internal const string SteamNetworkingSocketsTag = "sns";
 		internal const string SteamNetworkingTag = "def"; // Stood for default when this was the default in the past.
+		internal const string WebSocketTag = "ws"; // Browser-reachable transport (web port).
 
 		internal static string GetTag(IServerTransport serverTransport)
 		{
@@ -26,6 +28,12 @@ namespace SDG.Unturned
 			{
 				return SystemSocketsTag;
 			}
+#if !UNITY_WEBGL || UNITY_EDITOR
+			else if (type == typeof(ServerTransport_WebSocket))
+			{
+				return WebSocketTag;
+			}
+#endif
 			else if (type == typeof(ServerTransport_SteamNetworkingSockets))
 			{
 				return SteamNetworkingSocketsTag;
@@ -44,6 +52,10 @@ namespace SDG.Unturned
 
 		internal static IClientTransport CreateClientTransport(string tag)
 		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+			// Browsers can only open WebSockets: web players connect to servers running ServerTransport_WebSocket.
+			return new ClientTransport_WebSocket();
+#endif
 			if (string.Equals(tag, SystemSocketsTag, StringComparison.OrdinalIgnoreCase))
 			{
 				return new ClientTransport_SystemSockets();
@@ -73,6 +85,12 @@ namespace SDG.Unturned
 				{
 					return new ServerTransport_SystemSockets();
 				}
+#if !UNITY_WEBGL || UNITY_EDITOR
+				else if (string.Equals(value, "WebSocket", StringComparison.OrdinalIgnoreCase))
+				{
+					return new ServerTransport_WebSocket();
+				}
+#endif
 				else if (string.Equals(value, "SteamNetworkingSockets", StringComparison.OrdinalIgnoreCase))
 				{
 					return new ServerTransport_SteamNetworkingSockets();

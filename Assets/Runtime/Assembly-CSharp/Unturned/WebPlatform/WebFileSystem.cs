@@ -26,6 +26,15 @@ namespace SDG.Unturned
 		[DllImport("__Internal")]
 		private static extern void WebSteam_SetPlayerName(string name);
 
+		[DllImport("__Internal")]
+		private static extern int WebFS_GetAccountId();
+
+		[DllImport("__Internal")]
+		private static extern void WebSteam_SetSteamID(ulong steamId);
+
+		/// <summary>Base of individual-account SteamIDs (universe 1, type 1, instance 1).</summary>
+		private const ulong IndividualSteamIdBase = 76561197960265728UL;
+
 		public static int MountedFileCount { get; private set; }
 
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -34,6 +43,7 @@ namespace SDG.Unturned
 			DisableJsonDynamicCode();
 			MountedFileCount = WebFS_MountGameFiles();
 			WebSteam_SetPlayerName(WebFS_GetPlayerName());
+			WebSteam_SetSteamID(IndividualSteamIdBase + (ulong) WebFS_GetAccountId());
 			Debug.Log($"[WebFileSystem] {MountedFileCount} game files mounted at /unturned");
 		}
 

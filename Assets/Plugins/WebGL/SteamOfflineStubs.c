@@ -4,10 +4,12 @@
 #include <string.h>
 #include <time.h>
 #define EXPORT __attribute__((used, visibility("default")))
-#define WEB_STEAM_ID ((int64_t)76561197960265729LL)
+// Individual-account SteamID; the web page picks a random per-browser account number at startup.
+static int64_t web_steam_id = (int64_t)76561197960265729LL;
 static char web_zero_block[65536] __attribute__((aligned(16)));
 static char web_player_name[64] = "Player";
 EXPORT void WebSteam_SetPlayerName(const char* name) { if (name) { strncpy(web_player_name, name, 63); web_player_name[63] = 0; } }
+EXPORT void WebSteam_SetSteamID(int64_t id) { if (id) web_steam_id = id; }
 
 EXPORT int32_t SteamAPI_Init(void) { return 1; }
 EXPORT void SteamAPI_Shutdown(void) {  }
@@ -849,7 +851,7 @@ EXPORT int32_t SteamAPI_ISteamUGC_ShowWorkshopEULA(int32_t a0) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUGC_GetWorkshopEULAStatus(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUser_GetHSteamUser(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUser_BLoggedOn(int32_t a0) { return 1; }
-EXPORT int64_t SteamAPI_ISteamUser_GetSteamID(int32_t a0) { return WEB_STEAM_ID; }
+EXPORT int64_t SteamAPI_ISteamUser_GetSteamID(int32_t a0) { return web_steam_id; }
 EXPORT int32_t SteamAPI_ISteamUser_InitiateGameConnection_DEPRECATED(int32_t a0, int32_t a1, int32_t a2, int64_t a3, int32_t a4, int32_t a5, int32_t a6) { return 0; }
 EXPORT void SteamAPI_ISteamUser_TerminateGameConnection_DEPRECATED(int32_t a0, int32_t a1, int32_t a2) {  }
 EXPORT void SteamAPI_ISteamUser_TrackAppUsageEvent(int32_t a0, int32_t a1, int32_t a2, int32_t a3) {  }

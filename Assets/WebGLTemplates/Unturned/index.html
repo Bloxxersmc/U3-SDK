@@ -45,16 +45,28 @@
       <div class="status" id="folder-status">No folder chosen.</div>
     </div>
 
-    <div class="panel">
-      <label for="name">2. Player name</label>
-      <input type="text" id="name" maxlength="32" value="Player" autocomplete="nickname">
+    <div class="panel" id="maps-panel" style="display:none">
+      <label>Maps to load</label>
+      <p style="margin:0 0 10px">Every checked map is read into this tab's memory before the game starts, so big maps
+        make loading slower and use more memory. Unchecked maps won't appear in the game's map list.</p>
+      <div id="maps"></div>
+      <div class="status" id="maps-status"></div>
     </div>
 
     <div class="panel">
-      <button id="play" disabled>Play</button>
+      <label for="name">2. Your name</label>
+      <p style="margin:0 0 10px">Picked for you; change it any time. Other players see this name online.</p>
+      <input type="text" id="name" maxlength="24" autocomplete="nickname">
+    </div>
+
+    <div class="panel">
+      <button id="play-online" disabled>Play online</button>
+      <button id="play" disabled style="background:#2d353c;color:var(--text);margin-left:8px">Play offline</button>
+      <div class="status" id="online-status"></div>
       <div class="status" id="gpu-status"></div>
     </div>
-    <small>Singleplayer only. Saves are kept in this browser (IndexedDB).</small>
+    <small>Online: everyone joins the same shared server and keeps their character between visits.
+      Offline: singleplayer, saved in this browser.</small>
   </div>
 
   <div id="game">
@@ -85,9 +97,39 @@
 
     var picked = null;
     var $ = function (id) { return document.getElementById(id); };
-    var folderInput = $("folder"), playBtn = $("play");
+    var folderInput = $("folder"), playBtn = $("play"), onlineBtn = $("play-online");
 
-    try { $("name").value = localStorage.getItem("unturnedWebName") || "Player"; } catch (e) {}
+    // The shared online server. Default: same host as this page, port 27016 (the server's port + 1).
+    // Change it here, or open the page with ?connect=host:port to try another one.
+    var ONLINE_SERVER = location.hostname ? location.hostname + ":27016" : "127.0.0.1:27016";
+    var connectParam = /[?&]connect=([^&]*)/.exec(location.search);
+    if (connectParam) ONLINE_SERVER = decodeURIComponent(connectParam[1]);
+    $("online-status").textContent = "Online server: " + ONLINE_SERVER;
+
+    // Names: generated once per browser, editable, kept between visits.
+    function cleanName(n) { return (n || "").replace(/[\u0000-\u001f<>]/g, "").replace(/\s+/g, " ").trim().slice(0, 24); }
+    var savedName = null;
+    try { savedName = cleanName(localStorage.getItem("unturnedWebName")); } catch (e) {}
+    if (!savedName || savedName === "Player") {
+      var r = new Uint16Array(1); crypto.getRandomValues(r);
+      savedName = "Survivor-" + (1000 + (r[0] % 9000));
+      try { localStorage.setItem("unturnedWebName", savedName); } catch (e) {}
+    }
+    $("name").value = savedName;
+
+    // Per-browser account number -> unique SteamID on servers. ?account=N overrides (e.g. two test tabs).
+    function accountId() {
+      var q = /[?&]account=(\d+)/.exec(location.search);
+      if (q) return parseInt(q[1], 10);
+      var id = 0;
+      try { id = parseInt(localStorage.getItem("unturnedWebAccountId") || "0", 10); } catch (e) {}
+      if (!(id > 0)) {
+        var r = new Uint32Array(1); crypto.getRandomValues(r);
+        id = (r[0] & 0x7fffffff) || 1;
+        try { localStorage.setItem("unturnedWebAccountId", String(id)); } catch (e) {}
+      }
+      return id;
+    }
 
     // Graphics check: WebGPU builds fall back to WebGL 2 automatically.
     (function () {
@@ -99,9 +141,13 @@
       var s = $("gpu-status"); s.textContent = parts.join(" · "); s.className = "status " + (gl ? "ok" : "bad");
     })();
 
-    // Dev/local mode: http://localhost:8080/?localdata loads the folder that serve.py --data serves at /gamedata/.
-    if (/[?&]localdata\b/.test(location.search)) {
-      fetch("gamedata/manifest.json").then(function (r) { return r.json(); }).then(function (m) {
+    // Game data next to the page (Tools/WebPort/package_site.py, or serve.py --data): gamedata/manifest.json.
+    // When it's there the folder picker isn't needed; otherwise the picker stays.
+    var wantLocal = /[?&]localdata/.test(location.search);
+    {
+      fetch("gamedata/manifest.json", { cache: "no-cache" }).then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status); return r.json();
+      }).then(function (m) {
         var total = 0;
         picked = m.files.map(function (f) {
           total += f.size;
@@ -119,10 +165,15 @@
             return attempt(8); } } };
         });
         var s = $("folder-status");
-        s.textContent = "Local game data: " + picked.length + " files, " + Math.round(total / 1048576) + " MB (from serve.py --data)";
-        s.className = "status ok"; playBtn.disabled = false;
-        if (/[?&]autoplay\b/.test(location.search)) playBtn.click();
-      }, function (e) { var s = $("folder-status"); s.textContent = "?localdata: no data served (" + e + ")"; s.className = "status bad"; });
+        s.textContent = "Game data found on this site: " + picked.length + " files, " + Math.round(total / 1048576) + " MB";
+        $("pick-btn").style.display = "none";
+        s.className = "status ok"; playBtn.disabled = false; onlineBtn.disabled = false;
+        showMaps(picked);
+        if (/[?&]autoplay=online/.test(location.search)) onlineBtn.click();
+        else if (/[?&]autoplay/.test(location.search)) playBtn.click();
+      }, function (e) {
+        if (wantLocal) { var s = $("folder-status"); s.textContent = "?localdata: no game data on this site (" + e + ")"; s.className = "status bad"; }
+      });
     }
 
     $("pick-btn").addEventListener("click", function () { folderInput.click(); });
@@ -142,21 +193,72 @@
       var total = entries.reduce(function (n, e) { return n + e.file.size; }, 0);
       if (!hasCore) {
         status.textContent = "That folder has no Bundles/core.masterbundle. Pick the UnturnedWebData folder made by convert_for_web.py (not the Steam install).";
-        status.className = "status bad"; playBtn.disabled = true; return;
+        status.className = "status bad"; playBtn.disabled = true; onlineBtn.disabled = true; return;
       }
       picked = entries;
       status.textContent = entries.length + " files, " + Math.round(total / 1048576) + " MB. Maps: " + (Object.keys(maps).join(", ") || "none");
-      status.className = "status ok"; playBtn.disabled = false;
+      status.className = "status ok"; playBtn.disabled = false; onlineBtn.disabled = false;
+      showMaps(entries);
     });
 
-    playBtn.addEventListener("click", function () {
+    // Map selection. Default: everything under 200 MB. ?maps=Russia,PEI (or ?maps=all) overrides.
+    var BIG_MAP_BYTES = 200 * 1048576;
+    var mapSizes = {};
+    function mapOf(path) { var m = /^Maps\/([^/]+)\//.exec(path); return m ? m[1] : null; }
+    function showMaps(entries) {
+      mapSizes = {};
+      entries.forEach(function (e) { var m = mapOf(e.path); if (m) mapSizes[m] = (mapSizes[m] || 0) + e.file.size; });
+      var names = Object.keys(mapSizes).sort();
+      var saved = null;
+      try { saved = JSON.parse(localStorage.getItem("unturnedWebMaps") || "null"); } catch (e) {}
+      var q = /[?&]maps=([^&]*)/.exec(location.search);
+      var fromUrl = q ? decodeURIComponent(q[1]).split(",").map(function (s) { return s.trim(); }) : null;
+      var box = $("maps"); box.innerHTML = "";
+      names.forEach(function (n) {
+        var mb = Math.round(mapSizes[n] / 1048576);
+        var on = fromUrl ? (fromUrl.indexOf("all") >= 0 || fromUrl.indexOf(n) >= 0)
+               : saved ? saved.indexOf(n) >= 0 : mapSizes[n] < BIG_MAP_BYTES;
+        var label = document.createElement("label");
+        label.style.cssText = "display:inline-flex;align-items:center;gap:6px;margin:0 14px 6px 0;font-weight:400";
+        var cb = document.createElement("input"); cb.type = "checkbox"; cb.value = n; cb.checked = on;
+        cb.addEventListener("change", updateMapStatus);
+        label.appendChild(cb);
+        label.appendChild(document.createTextNode(n + " (" + mb + " MB)" + (mapSizes[n] >= BIG_MAP_BYTES ? " ⚠" : "")));
+        box.appendChild(label);
+      });
+      $("maps-panel").style.display = names.length ? "block" : "none";
+      updateMapStatus();
+    }
+    function selectedMaps() {
+      return Array.prototype.slice.call(document.querySelectorAll("#maps input:checked")).map(function (c) { return c.value; });
+    }
+    function updateMapStatus() {
+      var sel = selectedMaps(), bytes = 0;
+      (picked || []).forEach(function (e) { var m = mapOf(e.path); if (!m || sel.indexOf(m) >= 0) bytes += e.file.size; });
+      var big = sel.filter(function (n) { return mapSizes[n] >= BIG_MAP_BYTES; });
+      var s = $("maps-status");
+      s.textContent = sel.length + " map(s), " + Math.round(bytes / 1048576) + " MB to load" +
+        (big.length ? ". Big maps (" + big.join(", ") + ") need a lot of memory; load one at a time if the tab crashes." : "");
+      s.className = "status " + (big.length ? "warn" : "ok");
+      try { localStorage.setItem("unturnedWebMaps", JSON.stringify(sel)); } catch (e) {}
+    }
+    function filterByMaps(entries) {
+      var sel = selectedMaps();
+      return entries.filter(function (e) { var m = mapOf(e.path); return !m || sel.indexOf(m) >= 0; });
+    }
+
+    function startPlay(online) {
       if (!picked) return;
-      var name = $("name").value.trim() || "Player";
+      var name = cleanName($("name").value) || savedName;
       try { localStorage.setItem("unturnedWebName", name); } catch (e) {}
       window.unturnedPlayerName = name;
+      window.unturnedAccountId = accountId();
+      window.unturnedConnectTo = online ? ONLINE_SERVER : "";
       $("setup").style.display = "none"; $("game").style.display = "block";
-      readFiles(picked).then(startGame, function (err) { showError("Reading game files failed: " + err); });
-    });
+      readFiles(filterByMaps(picked)).then(startGame, function (err) { showError("Reading game files failed: " + err); });
+    }
+    playBtn.addEventListener("click", function () { startPlay(false); });
+    onlineBtn.addEventListener("click", function () { startPlay(true); });
 
     function setProgress(text, fraction) {
       $("loading-text").textContent = text;

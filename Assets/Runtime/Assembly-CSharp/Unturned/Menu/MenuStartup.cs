@@ -56,8 +56,13 @@ namespace SDG.Unturned
 			if (!didAlreadyAutoLoad)
 			{
 				didAlreadyAutoLoad = true;
+				string connectTo = WebConnect.GetRequestedServer();
 				string autoLoadLevel = GetWebQueryParameter("autoload");
-				if (!string.IsNullOrEmpty(autoLoadLevel))
+				if (!string.IsNullOrEmpty(connectTo))
+				{
+					WebConnect.Connect(connectTo, GetWebQueryParameter("password") ?? string.Empty);
+				}
+				else if (!string.IsNullOrEmpty(autoLoadLevel))
 				{
 					UnturnedLog.info($"Web autoload: starting singleplayer on {autoLoadLevel}");
 					Provider.map = autoLoadLevel;

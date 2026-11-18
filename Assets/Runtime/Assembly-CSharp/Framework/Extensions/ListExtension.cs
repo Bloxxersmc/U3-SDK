@@ -15,6 +15,12 @@ namespace System.Collections.Generic
 
 			static ListInternalArrayAccessor()
 			{
+#if UNITY_WEBGL && !UNITY_EDITOR
+				// IL2CPP (browser builds) can't run Reflection.Emit, so read the field through reflection instead.
+				FieldInfo itemsField = typeof(List<T>).GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+				Getter = list => (T[]) itemsField.GetValue(list);
+				return;
+#endif
 				// Thanks to Ondrej Petrzilka on Stack Overflow CC BY-SA 4.0:  
 				// https://stackoverflow.com/a/17308019
 				DynamicMethod dm = new DynamicMethod("get", MethodAttributes.Static | MethodAttributes.Public, CallingConventions.Standard, typeof(T[]), new Type[] { typeof(List<T>) }, typeof(ListInternalArrayAccessor<T>), true);

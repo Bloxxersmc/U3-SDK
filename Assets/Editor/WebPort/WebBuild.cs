@@ -91,6 +91,44 @@ namespace SDG.Unturned.WebPort
 			}
 		}
 
+		/// <summary>
+		/// Windows build used as a dedicated server for web players (WebSocket transport, offline auth).
+		/// Run it with Tools/WebPort/server/run_web_server.py, which links in your local game files.
+		///   Unity.exe -batchmode -nographics -quit -projectPath . -buildTarget Win64 -executeMethod SDG.Unturned.WebPort.WebBuild.BuildWebServerCommandLine
+		/// </summary>
+		[MenuItem("Unturned/Web/Build Web Server (Windows)")]
+		public static void BuildWebServerMenu() => BuildWebServer();
+
+		public static void BuildWebServerCommandLine() => ExitWith(BuildWebServer());
+
+		public static bool BuildWebServer()
+		{
+			if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.StandaloneWindows64)
+			{
+				if (!EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64))
+				{
+					Debug.LogError("Could not switch to the Windows standalone build target.");
+					return false;
+				}
+			}
+			PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+			string outputPath = Path.Combine("Builds", "WebServer", "Unturned.exe");
+			string[] scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
+			BuildPlayerOptions options = new BuildPlayerOptions
+			{
+				scenes = scenes,
+				locationPathName = outputPath,
+				target = BuildTarget.StandaloneWindows64,
+				targetGroup = BuildTargetGroup.Standalone,
+				options = BuildOptions.None,
+			};
+			Debug.Log($"[WebBuild] Building web server with {scenes.Length} scenes to {outputPath}");
+			UnityEditor.Build.Reporting.BuildReport report = BuildPipeline.BuildPlayer(options);
+			bool success = report.summary.result == UnityEditor.Build.Reporting.BuildResult.Succeeded;
+			Debug.Log($"[WebBuild] WebServer: {report.summary.result}, {report.summary.totalErrors} errors, {report.summary.totalSize / (1024 * 1024)} MB, {report.summary.totalTime}");
+			return success;
+		}
+
 		private static void ExitWith(bool success)
 		{
 			if (Application.isBatchMode)
