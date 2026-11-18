@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{{ PRODUCT_NAME }}} (web port)</title>
+  <style>
+    :root { --bg: #101214; --panel: #1b1f23; --text: #e6e8ea; --muted: #9aa3ab; --accent: #6fbf4a; --warn: #e0a84a; --bad: #e06a5a; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    #setup { max-width: 640px; margin: 0 auto; padding: 48px 16px; }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    .sub { color: var(--muted); margin: 0 0 24px; }
+    .panel { background: var(--panel); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; }
+    input[type=text] { width: 100%; padding: 9px 10px; border-radius: 6px; border: 1px solid #333a40; background: #0d0f11; color: var(--text); font: inherit; }
+    button, .pick { display: inline-block; padding: 10px 18px; border-radius: 6px; border: 0; background: var(--accent); color: #0d1a07; font: inherit; font-weight: 700; cursor: pointer; }
+    button:disabled { opacity: .45; cursor: default; }
+    .pick { background: #2d353c; color: var(--text); }
+    #folder { display: none; }
+    .status { margin-top: 10px; color: var(--muted); white-space: pre-line; }
+    .status.ok { color: var(--accent); } .status.warn { color: var(--warn); } .status.bad { color: var(--bad); }
+    code { background: #0d0f11; padding: 1px 5px; border-radius: 4px; }
+    small { color: var(--muted); }
+    #game { display: none; position: fixed; inset: 0; background: #000; }
+    #unity-canvas { width: 100%; height: 100%; display: block; background: #000; }
+    #loading { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(420px, 80vw); text-align: center; }
+    #bar { height: 6px; background: #2d353c; border-radius: 3px; overflow: hidden; margin-top: 10px; }
+    #bar > div { height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+    #error { position: absolute; left: 16px; right: 16px; bottom: 16px; color: var(--bad); white-space: pre-wrap; font-family: ui-monospace, monospace; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div id="setup">
+    <h1>{{{ PRODUCT_NAME }}} &mdash; browser build</h1>
+    <p class="sub">Unofficial community web port built from the U3 SDK. Not made or endorsed by Smartly Dressed Games.</p>
+
+    <div class="panel">
+      <label>1. Your prepared game folder</label>
+      <p style="margin:0 0 12px">Pick the <code>UnturnedWebData</code> folder you made with
+        <code>Tools/WebPort/bundles/convert_for_web.py</code> from your own Unturned install.
+        The files are read by this tab only and are never uploaded.</p>
+      <span class="pick" id="pick-btn" role="button" tabindex="0">Choose folder&hellip;</span>
+      <input type="file" id="folder" webkitdirectory directory multiple>
+      <div class="status" id="folder-status">No folder chosen.</div>
+    </div>
+
+    <div class="panel">
+      <label for="name">2. Player name</label>
+      <input type="text" id="name" maxlength="32" value="Player" autocomplete="nickname">
+    </div>
+
+    <div class="panel">
+      <button id="play" disabled>Play</button>
+      <div class="status" id="gpu-status"></div>
+    </div>
+    <small>Singleplayer only. Saves are kept in this browser (IndexedDB).</small>
+  </div>
+
+  <div id="game">
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+    <div id="loading"><div id="loading-text">Loading&hellip;</div><div id="bar"><div></div></div></div>
+    <div id="error"></div>
+  </div>
+
+  <script>
+  (function () {
+    var buildUrl = "Build";
+    var config = {
+      dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+      frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+      codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
+#if MEMORY_FILENAME
+      memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}",
+#endif
+#if SYMBOLS_FILENAME
+      symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}",
+#endif
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: {{{ JSON.stringify(COMPANY_NAME) }}},
+      productName: {{{ JSON.stringify(PRODUCT_NAME) }}},
+      productVersion: {{{ JSON.stringify(PRODUCT_VERSION) }}},
+      showBanner: function (msg, type) { if (type === "error") showError(msg); else console.log("[unity]", msg); },
+    };
+
+    var picked = null;
+    var $ = function (id) { return document.getElementById(id); };
+    var folderInput = $("folder"), playBtn = $("play");
+
+    try { $("name").value = localStorage.getItem("unturnedWebName") || "Player"; } catch (e) {}
+
+    // Graphics check: WebGPU builds fall back to WebGL 2 automatically.
+    (function () {
+      var gl = document.createElement("canvas").getContext("webgl2");
+      var parts = [];
+      parts.push(navigator.gpu ? "WebGPU available" : "WebGPU not available");
+      parts.push(gl ? "WebGL 2 available" : "WebGL 2 NOT available");
+      if (gl && !gl.getExtension("WEBGL_compressed_texture_s3tc")) parts.push("warning: no S3TC texture support, textures will use much more memory");
+      var s = $("gpu-status"); s.textContent = parts.join(" · "); s.className = "status " + (gl ? "ok" : "bad");
+    })();
+
+    $("pick-btn").addEventListener("click", function () { folderInput.click(); });
+    $("pick-btn").addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") folderInput.click(); });
+
+    folderInput.addEventListener("change", function () {
+      var files = Array.prototype.slice.call(folderInput.files || []);
+      var status = $("folder-status");
+      if (!files.length) { status.textContent = "No files in that folder."; status.className = "status bad"; return; }
+      // webkitRelativePath is "<chosen folder>/<path>"; drop the chosen folder's own name.
+      var entries = files.map(function (f) {
+        var rel = (f.webkitRelativePath || f.name).split("/").slice(1).join("/");
+        return { path: rel, file: f };
+      }).filter(function (e) { return e.path.length > 0; });
+      var hasCore = entries.some(function (e) { return e.path === "Bundles/core.masterbundle"; });
+      var maps = {}; entries.forEach(function (e) { var m = /^Maps\/([^/]+)\//.exec(e.path); if (m) maps[m[1]] = 1; });
+      var total = entries.reduce(function (n, e) { return n + e.file.size; }, 0);
+      if (!hasCore) {
+        status.textContent = "That folder has no Bundles/core.masterbundle. Pick the UnturnedWebData folder made by convert_for_web.py (not the Steam install).";
+        status.className = "status bad"; playBtn.disabled = true; return;
+      }
+      picked = entries;
+      status.textContent = entries.length + " files, " + Math.round(total / 1048576) + " MB. Maps: " + (Object.keys(maps).join(", ") || "none");
+      status.className = "status ok"; playBtn.disabled = false;
+    });
+
+    playBtn.addEventListener("click", function () {
+      if (!picked) return;
+      var name = $("name").value.trim() || "Player";
+      try { localStorage.setItem("unturnedWebName", name); } catch (e) {}
+      window.unturnedPlayerName = name;
+      $("setup").style.display = "none"; $("game").style.display = "block";
+      readFiles(picked).then(startGame, function (err) { showError("Reading game files failed: " + err); });
+    });
+
+    function setProgress(text, fraction) {
+      $("loading-text").textContent = text;
+      $("bar").firstChild.style.width = Math.round(Math.max(0, Math.min(1, fraction)) * 100) + "%";
+    }
+
+    function readFiles(entries) {
+      var out = [], done = 0, bytes = 0, total = entries.reduce(function (n, e) { return n + e.file.size; }, 0);
+      var i = 0, CONCURRENCY = 16;
+      return new Promise(function (resolve, reject) {
+        function next() {
+          if (i >= entries.length) { if (done === entries.length) resolve(out); return; }
+          var e = entries[i++];
+          e.file.arrayBuffer().then(function (buf) {
+            out.push({ path: e.path, data: new Uint8Array(buf) });
+            done++; bytes += buf.byteLength;
+            setProgress("Reading game files… " + Math.round(bytes / 1048576) + " / " + Math.round(total / 1048576) + " MB", 0.5 * bytes / Math.max(1, total));
+            if (done === entries.length) resolve(out); else next();
+          }, reject);
+        }
+        for (var k = 0; k < CONCURRENCY; ++k) next();
+      });
+    }
+
+    function startGame(files) {
+      window.unturnedWebFiles = files;
+      setProgress("Starting engine…", 0.5);
+      var script = document.createElement("script");
+      script.src = buildUrl + "/{{{ LOADER_FILENAME }}}";
+      script.onload = function () {
+        createUnityInstance($("unity-canvas"), config, function (p) { setProgress("Loading engine… " + Math.round(p * 100) + "%", 0.5 + 0.5 * p); })
+          .then(function (instance) { window.unityInstance = instance; $("loading").style.display = "none"; })
+          .catch(function (err) { showError(String(err)); });
+      };
+      script.onerror = function () { showError("Could not load " + script.src); };
+      document.body.appendChild(script);
+    }
+
+    function showError(msg) { var e = $("error"); e.textContent += msg + "\n"; console.error(msg); }
+  })();
+  </script>
+</body>
+</html>

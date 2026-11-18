@@ -293,7 +293,15 @@ namespace SDG.Unturned
 		public void StartLoad(byte[] inputData, byte[] inputHash)
 		{
 			UnturnedLog.info($"Loading asset bundle \"{assetBundleName}\" from \"{directoryPath}\"...");
-			assetBundleCreateRequest = AssetBundle.LoadFromMemoryAsync(inputData);
+			if (inputData == null)
+			{
+				// Web builds: load straight from the virtual file system (see AssetsWorker).
+				assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(getAssetBundlePath());
+			}
+			else
+			{
+				assetBundleCreateRequest = AssetBundle.LoadFromMemoryAsync(inputData);
+			}
 			hash = inputHash;
 			loadStartTime = Time.realtimeSinceStartupAsDouble;
 		}

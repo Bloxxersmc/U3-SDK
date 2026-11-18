@@ -218,6 +218,22 @@ namespace SDG.Unturned
 							byte[] data;
 							byte[] hash;
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+							// Browser: the bundle stays in the virtual file system and Unity streams it with
+							// LoadFromFile, instead of copying the whole file into the (size-limited) wasm heap.
+							// Offline singleplayer doesn't need the integrity hash.
+							data = null;
+							hash = new byte[20];
+							Interlocked.Increment(ref totalMasterBundlesRead);
+							state.owner.resultItems.Enqueue(new MasterBundle
+							{
+								config = config,
+								assetBundleData = data,
+								hash = hash,
+							});
+							continue;
+#endif // UNITY_WEBGL && !UNITY_EDITOR
+
 							using (FileStream fileStream = new FileStream(config.getAssetBundlePath(), FileMode.Open, FileAccess.Read, FileShare.Read))
 							using (SHA1Stream hashStream = new SHA1Stream(fileStream))
 							using (MemoryStream memoryStream = new MemoryStream())
