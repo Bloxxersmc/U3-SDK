@@ -937,7 +937,7 @@ namespace SDG.Unturned
 
 		private static int GetAttachmentEventHookCount(GameObject prefab)
 		{
-			int key = prefab.GetInstanceID();
+			int key = prefab.GetStableId();
 
 			if (!cachedAttachmentEventHookCount.TryGetValue(key, out int hookCount))
 			{

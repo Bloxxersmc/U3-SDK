@@ -68,7 +68,7 @@ namespace SDG.Unturned
 			int fixedCount = 0;
 			foreach (Material material in Resources.FindObjectsOfTypeAll<Material>())
 			{
-				if (material == null || !handledMaterials.Add(material.GetInstanceID()))
+				if (material == null || !handledMaterials.Add(material.GetStableId()))
 					continue;
 
 				Shader current = material.shader;

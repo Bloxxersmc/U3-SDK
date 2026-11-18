@@ -5,6 +5,9 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_6000_0_OR_NEWER
+using PhysicMaterial = UnityEngine.PhysicsMaterial; // renamed in Unity 6
+#endif
 
 namespace SDG.Unturned
 {

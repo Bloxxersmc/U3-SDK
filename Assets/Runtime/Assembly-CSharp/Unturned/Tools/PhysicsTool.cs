@@ -9,6 +9,9 @@ using SDG.Framework.Landscapes;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
+#if UNITY_6000_0_OR_NEWER
+using PhysicMaterial = UnityEngine.PhysicsMaterial; // renamed in Unity 6
+#endif
 
 namespace SDG.Unturned
 {
@@ -377,7 +380,7 @@ namespace SDG.Unturned
 			PhysicMaterial material = collider?.sharedMaterial;
 			if (material != null)
 			{
-				int id = material.GetInstanceID();
+				int id = material.GetStableId();
 				if (!physicsMaterialToName.TryGetValue(id, out result))
 				{
 					result = material.name;

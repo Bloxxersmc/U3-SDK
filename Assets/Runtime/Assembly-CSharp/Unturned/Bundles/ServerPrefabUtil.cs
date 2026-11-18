@@ -85,7 +85,7 @@ namespace SDG.Unturned
 			{
 				// Avoid inconsistent ordering exception if object has multiple components of the
 				// same type. (public issue #5525)
-				return lhs.GetInstanceID().CompareTo(rhs.GetInstanceID());
+				return lhs.GetStableId().CompareTo(rhs.GetStableId());
 			}
 
 			// Nelson 2025-12-04: if adding more dependencies here please make sure the dependency is ALSO in the typesToRemove set. ;)

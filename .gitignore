@@ -197,3 +197,5 @@ ItemLinks.txt
 # Browser builds and converted game data (game content must not be committed)
 /Builds/Web/
 UnturnedWebData/
+/.vscode/
+/*.slnx

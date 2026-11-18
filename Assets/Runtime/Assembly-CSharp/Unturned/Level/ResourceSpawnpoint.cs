@@ -4,6 +4,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_6000_0_OR_NEWER
+using PhysicMaterial = UnityEngine.PhysicsMaterial; // renamed in Unity 6
+#endif
 
 namespace SDG.Unturned
 {
@@ -286,8 +289,8 @@ namespace SDG.Unturned
 							gib.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
 							gib.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.Discrete;
 							gib.GetComponent<Rigidbody>().AddForce(ragdoll);
-							gib.GetComponent<Rigidbody>().drag = 1;
-							gib.GetComponent<Rigidbody>().angularDrag = 1;
+							gib.GetComponent<Rigidbody>().linearDamping = 1;
+							gib.GetComponent<Rigidbody>().angularDamping = 1;
 
 							//if(asset.isSpeedTree)
 							//{

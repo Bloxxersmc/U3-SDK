@@ -23,11 +23,13 @@ EXPORT void SteamAPI_UnregisterCallResult(int32_t a0, int64_t a1) {  }
 EXPORT int32_t SteamAPI_IsSteamRunning(void) { return 1; }
 EXPORT int32_t SteamAPI_GetSteamInstallPath(void) { return 0; }
 EXPORT int32_t SteamAPI_GetHSteamPipe(void) { return 1; }
+EXPORT void SteamAPI_SetTryCatchCallbacks(int32_t a0) {  }
 EXPORT int32_t SteamAPI_GetHSteamUser(void) { return 1; }
 EXPORT int32_t SteamInternal_ContextInit(int32_t a0) { return (int32_t)(intptr_t)web_zero_block; }
 EXPORT int32_t SteamInternal_CreateInterface(int32_t a0) { return (int32_t)(intptr_t)web_zero_block; }
 EXPORT int32_t SteamInternal_FindOrCreateUserInterface(int32_t a0, int32_t a1) { return (int32_t)(intptr_t)web_zero_block; }
 EXPORT int32_t SteamInternal_FindOrCreateGameServerInterface(int32_t a0, int32_t a1) { return (int32_t)(intptr_t)web_zero_block; }
+EXPORT void SteamAPI_UseBreakpadCrashHandler(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) {  }
 EXPORT void SteamAPI_SetBreakpadAppID(int32_t a0) {  }
 EXPORT void SteamAPI_ManualDispatch_Init(void) {  }
 EXPORT void SteamAPI_ManualDispatch_RunFrame(int32_t a0) {  }
@@ -46,12 +48,13 @@ EXPORT int32_t SteamClient(void) { return (int32_t)(intptr_t)web_zero_block; }
 EXPORT int32_t SteamGameServerClient(void) { return (int32_t)(intptr_t)web_zero_block; }
 EXPORT void SteamAPI_SteamNetworkingIPAddr_Clear(int32_t a0) {  }
 EXPORT int32_t SteamAPI_SteamNetworkingIPAddr_IsIPv6AllZeros(int32_t a0) { return 0; }
-EXPORT void SteamAPI_SteamNetworkingIPAddr_SetIPv6(int32_t a0, int32_t a1, int32_t a2, int32_t a3) {  }
+EXPORT void SteamAPI_SteamNetworkingIPAddr_SetIPv6(int32_t a0, int32_t a1, int32_t a2) {  }
 EXPORT void SteamAPI_SteamNetworkingIPAddr_SetIPv4(int32_t a0, int32_t a1, int32_t a2) {  }
 EXPORT int32_t SteamAPI_SteamNetworkingIPAddr_IsIPv4(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_SteamNetworkingIPAddr_GetIPv4(int32_t a0) { return 0; }
 EXPORT void SteamAPI_SteamNetworkingIPAddr_SetIPv6LocalHost(int32_t a0, int32_t a1) {  }
 EXPORT int32_t SteamAPI_SteamNetworkingIPAddr_IsLocalHost(int32_t a0) { return 0; }
+EXPORT void SteamAPI_SteamNetworkingIPAddr_ToString(int32_t a0, int32_t a1, int32_t a2, int32_t a3) {  }
 EXPORT int32_t SteamAPI_SteamNetworkingIPAddr_ParseString(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_SteamNetworkingIPAddr_IsEqualTo(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_SteamNetworkingIPAddr_GetFakeIPType(int32_t a0) { return 0; }
@@ -78,7 +81,7 @@ EXPORT void SteamAPI_SteamNetworkingIdentity_SetLocalHost(int32_t a0) {  }
 EXPORT int32_t SteamAPI_SteamNetworkingIdentity_IsLocalHost(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_SteamNetworkingIdentity_SetGenericString(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_SteamNetworkingIdentity_GetGenericString(int32_t a0) { return (int32_t)(intptr_t)web_zero_block; }
-EXPORT int32_t SteamAPI_SteamNetworkingIdentity_SetGenericBytes(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int32_t SteamAPI_SteamNetworkingIdentity_SetGenericBytes(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_SteamNetworkingIdentity_GetGenericBytes(int32_t a0, int32_t a1) { return (int32_t)(intptr_t)web_zero_block; }
 EXPORT int32_t SteamAPI_SteamNetworkingIdentity_IsEqualTo(int32_t a0, int32_t a1) { return 0; }
 EXPORT void SteamAPI_SteamNetworkingIdentity_ToString(int32_t a0, int32_t a1, int32_t a2) {  }
@@ -88,8 +91,19 @@ EXPORT int32_t SteamAPI_ISteamNetworkingConnectionSignaling_SendSignal(int32_t a
 EXPORT void SteamAPI_ISteamNetworkingConnectionSignaling_Release(int32_t a0) {  }
 EXPORT int32_t SteamAPI_ISteamNetworkingSignalingRecvContext_OnConnectRequest(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return (int32_t)(intptr_t)web_zero_block; }
 EXPORT void SteamAPI_ISteamNetworkingSignalingRecvContext_SendRejectionSignal(int32_t a0, int32_t a1, int32_t a2, int32_t a3) {  }
+EXPORT int32_t SteamEncryptedAppTicket_BDecryptTicket(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
+EXPORT int32_t SteamEncryptedAppTicket_BIsTicketForApp(int32_t a0, int32_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamEncryptedAppTicket_GetTicketIssueTime(int32_t a0, int32_t a1) { return 0; }
+EXPORT void SteamEncryptedAppTicket_GetTicketSteamID(int32_t a0, int32_t a1, int32_t a2) {  }
+EXPORT int32_t SteamEncryptedAppTicket_GetTicketAppID(int32_t a0, int32_t a1) { return 0; }
+EXPORT int32_t SteamEncryptedAppTicket_BUserOwnsAppInTicket(int32_t a0, int32_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamEncryptedAppTicket_BUserIsVacBanned(int32_t a0, int32_t a1) { return 0; }
+EXPORT int32_t SteamEncryptedAppTicket_GetUserVariableData(int32_t a0, int32_t a1, int32_t a2) { return (int32_t)(intptr_t)web_zero_block; }
+EXPORT int32_t SteamEncryptedAppTicket_BIsTicketSigned(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int32_t SteamEncryptedAppTicket_BIsLicenseBorrowed(int32_t a0, int32_t a1) { return 0; }
+EXPORT int32_t SteamEncryptedAppTicket_BIsLicenseTemporary(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamAppList_GetNumInstalledApps(int32_t a0) { return 0; }
-EXPORT int32_t SteamAPI_ISteamAppList_GetInstalledApps(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int32_t SteamAPI_ISteamAppList_GetInstalledApps(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamAppList_GetAppName(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamAppList_GetAppInstallDir(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamAppList_GetAppBuildId(int32_t a0, int32_t a1) { return 0; }
@@ -109,7 +123,8 @@ EXPORT void SteamAPI_ISteamApps_InstallDLC(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamApps_UninstallDLC(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamApps_RequestAppProofOfPurchaseKey(int32_t a0, int32_t a1) {  }
 EXPORT int32_t SteamAPI_ISteamApps_GetCurrentBetaName(int32_t a0, int32_t a1, int32_t a2) { return 0; }
-EXPORT int32_t SteamAPI_ISteamApps_GetInstalledDepots(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
+EXPORT int32_t SteamAPI_ISteamApps_MarkContentCorrupt(int32_t a0, int32_t a1) { return 0; }
+EXPORT int32_t SteamAPI_ISteamApps_GetInstalledDepots(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamApps_GetAppInstallDir(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamApps_BIsAppInstalled(int32_t a0, int32_t a1) { return 0; }
 EXPORT int64_t SteamAPI_ISteamApps_GetAppOwner(int32_t a0) { return 0; }
@@ -174,17 +189,18 @@ EXPORT int32_t SteamAPI_ISteamFriends_GetFriendsGroupCount(int32_t a0) { return 
 EXPORT int32_t SteamAPI_ISteamFriends_GetFriendsGroupIDByIndex(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamFriends_GetFriendsGroupName(int32_t a0, int32_t a1) { return (int32_t)(intptr_t)web_zero_block; }
 EXPORT int32_t SteamAPI_ISteamFriends_GetFriendsGroupMembersCount(int32_t a0, int32_t a1) { return 0; }
-EXPORT void SteamAPI_ISteamFriends_GetFriendsGroupMembersList(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) {  }
+EXPORT void SteamAPI_ISteamFriends_GetFriendsGroupMembersList(int32_t a0, int32_t a1, int32_t a2, int32_t a3) {  }
 EXPORT int32_t SteamAPI_ISteamFriends_HasFriend(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamFriends_GetClanCount(int32_t a0) { return 0; }
 EXPORT int64_t SteamAPI_ISteamFriends_GetClanByIndex(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamFriends_GetClanName(int32_t a0, int64_t a1) { return (int32_t)(intptr_t)web_zero_block; }
 EXPORT int32_t SteamAPI_ISteamFriends_GetClanTag(int32_t a0, int64_t a1) { return (int32_t)(intptr_t)web_zero_block; }
 EXPORT int32_t SteamAPI_ISteamFriends_GetClanActivityCounts(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
-EXPORT int64_t SteamAPI_ISteamFriends_DownloadClanActivityCounts(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int64_t SteamAPI_ISteamFriends_DownloadClanActivityCounts(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamFriends_GetFriendCountFromSource(int32_t a0, int64_t a1) { return 0; }
 EXPORT int64_t SteamAPI_ISteamFriends_GetFriendFromSourceByIndex(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamFriends_IsUserInSource(int32_t a0, int64_t a1, int64_t a2) { return 0; }
+EXPORT void SteamAPI_ISteamFriends_SetInGameVoiceSpeaking(int32_t a0, int64_t a1, int32_t a2) {  }
 EXPORT void SteamAPI_ISteamFriends_ActivateGameOverlay(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamFriends_ActivateGameOverlayToUser(int32_t a0, int32_t a1, int64_t a2) {  }
 EXPORT void SteamAPI_ISteamFriends_ActivateGameOverlayToWebPage(int32_t a0, int32_t a1, int32_t a2) {  }
@@ -194,6 +210,7 @@ EXPORT void SteamAPI_ISteamFriends_ActivateGameOverlayInviteDialog(int32_t a0, i
 EXPORT int32_t SteamAPI_ISteamFriends_GetSmallFriendAvatar(int32_t a0, int64_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamFriends_GetMediumFriendAvatar(int32_t a0, int64_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamFriends_GetLargeFriendAvatar(int32_t a0, int64_t a1) { return 0; }
+EXPORT int32_t SteamAPI_ISteamFriends_RequestUserInformation(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int64_t SteamAPI_ISteamFriends_RequestClanOfficerList(int32_t a0, int64_t a1) { return 0; }
 EXPORT int64_t SteamAPI_ISteamFriends_GetClanOwner(int32_t a0, int64_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamFriends_GetClanOfficerCount(int32_t a0, int64_t a1) { return 0; }
@@ -220,6 +237,7 @@ EXPORT int32_t SteamAPI_ISteamFriends_IsClanChatAdmin(int32_t a0, int64_t a1, in
 EXPORT int32_t SteamAPI_ISteamFriends_IsClanChatWindowOpenInSteam(int32_t a0, int64_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamFriends_OpenClanChatWindowInSteam(int32_t a0, int64_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamFriends_CloseClanChatWindowInSteam(int32_t a0, int64_t a1) { return 0; }
+EXPORT int32_t SteamAPI_ISteamFriends_SetListenForFriendsMessages(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamFriends_ReplyToFriendMessage(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamFriends_GetFriendMessage(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
 EXPORT int64_t SteamAPI_ISteamFriends_GetFollowerCount(int32_t a0, int64_t a1) { return 0; }
@@ -238,6 +256,7 @@ EXPORT int32_t SteamAPI_ISteamFriends_GetProfileItemPropertyUint(int32_t a0, int
 EXPORT void SteamAPI_ISteamGameServer_SetProduct(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamGameServer_SetGameDescription(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamGameServer_SetModDir(int32_t a0, int32_t a1) {  }
+EXPORT void SteamAPI_ISteamGameServer_SetDedicatedServer(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamGameServer_LogOn(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamGameServer_LogOnAnonymous(int32_t a0) {  }
 EXPORT void SteamAPI_ISteamGameServer_LogOff(int32_t a0) {  }
@@ -249,6 +268,7 @@ EXPORT void SteamAPI_ISteamGameServer_SetMaxPlayerCount(int32_t a0, int32_t a1) 
 EXPORT void SteamAPI_ISteamGameServer_SetBotPlayerCount(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamGameServer_SetServerName(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamGameServer_SetMapName(int32_t a0, int32_t a1) {  }
+EXPORT void SteamAPI_ISteamGameServer_SetPasswordProtected(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamGameServer_SetSpectatorPort(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamGameServer_SetSpectatorServerName(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamGameServer_ClearAllKeyValues(int32_t a0) {  }
@@ -256,6 +276,7 @@ EXPORT void SteamAPI_ISteamGameServer_SetKeyValue(int32_t a0, int32_t a1, int32_
 EXPORT void SteamAPI_ISteamGameServer_SetGameTags(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamGameServer_SetGameData(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamGameServer_SetRegion(int32_t a0, int32_t a1) {  }
+EXPORT void SteamAPI_ISteamGameServer_SetAdvertiseServerActive(int32_t a0, int32_t a1) {  }
 EXPORT int32_t SteamAPI_ISteamGameServer_GetAuthSessionTicket(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamGameServer_BeginAuthSession(int32_t a0, int32_t a1, int32_t a2, int64_t a3) { return 0; }
 EXPORT void SteamAPI_ISteamGameServer_EndAuthSession(int32_t a0, int64_t a1) {  }
@@ -300,18 +321,25 @@ EXPORT void SteamAPI_ISteamHTMLSurface_MouseDown(int32_t a0, int32_t a1, int32_t
 EXPORT void SteamAPI_ISteamHTMLSurface_MouseDoubleClick(int32_t a0, int32_t a1, int32_t a2) {  }
 EXPORT void SteamAPI_ISteamHTMLSurface_MouseMove(int32_t a0, int32_t a1, int32_t a2, int32_t a3) {  }
 EXPORT void SteamAPI_ISteamHTMLSurface_MouseWheel(int32_t a0, int32_t a1, int32_t a2) {  }
+EXPORT void SteamAPI_ISteamHTMLSurface_KeyDown(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) {  }
 EXPORT void SteamAPI_ISteamHTMLSurface_KeyUp(int32_t a0, int32_t a1, int32_t a2, int32_t a3) {  }
 EXPORT void SteamAPI_ISteamHTMLSurface_KeyChar(int32_t a0, int32_t a1, int32_t a2, int32_t a3) {  }
 EXPORT void SteamAPI_ISteamHTMLSurface_SetHorizontalScroll(int32_t a0, int32_t a1, int32_t a2) {  }
 EXPORT void SteamAPI_ISteamHTMLSurface_SetVerticalScroll(int32_t a0, int32_t a1, int32_t a2) {  }
+EXPORT void SteamAPI_ISteamHTMLSurface_SetKeyFocus(int32_t a0, int32_t a1, int32_t a2) {  }
 EXPORT void SteamAPI_ISteamHTMLSurface_ViewSource(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamHTMLSurface_CopyToClipboard(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamHTMLSurface_PasteFromClipboard(int32_t a0, int32_t a1) {  }
+EXPORT void SteamAPI_ISteamHTMLSurface_Find(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) {  }
 EXPORT void SteamAPI_ISteamHTMLSurface_StopFind(int32_t a0, int32_t a1) {  }
 EXPORT void SteamAPI_ISteamHTMLSurface_GetLinkAtPosition(int32_t a0, int32_t a1, int32_t a2, int32_t a3) {  }
+EXPORT void SteamAPI_ISteamHTMLSurface_SetCookie(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5, int32_t a6, int32_t a7) {  }
 EXPORT void SteamAPI_ISteamHTMLSurface_SetPageScaleFactor(int32_t a0, int32_t a1, float a2, int32_t a3, int32_t a4) {  }
+EXPORT void SteamAPI_ISteamHTMLSurface_SetBackgroundMode(int32_t a0, int32_t a1, int32_t a2) {  }
 EXPORT void SteamAPI_ISteamHTMLSurface_SetDPIScalingFactor(int32_t a0, int32_t a1, float a2) {  }
 EXPORT void SteamAPI_ISteamHTMLSurface_OpenDeveloperTools(int32_t a0, int32_t a1) {  }
+EXPORT void SteamAPI_ISteamHTMLSurface_AllowStartRequest(int32_t a0, int32_t a1, int32_t a2) {  }
+EXPORT void SteamAPI_ISteamHTMLSurface_JSDialogResponse(int32_t a0, int32_t a1, int32_t a2) {  }
 EXPORT void SteamAPI_ISteamHTMLSurface_FileLoadDialogResponse(int32_t a0, int32_t a1, int32_t a2) {  }
 EXPORT int32_t SteamAPI_ISteamHTTP_CreateHTTPRequest(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamHTTP_SetHTTPRequestContextValue(int32_t a0, int32_t a1, int64_t a2) { return 0; }
@@ -330,16 +358,21 @@ EXPORT int32_t SteamAPI_ISteamHTTP_GetHTTPStreamingResponseBodyData(int32_t a0, 
 EXPORT int32_t SteamAPI_ISteamHTTP_ReleaseHTTPRequest(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamHTTP_GetHTTPDownloadProgressPct(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamHTTP_SetHTTPRequestRawPostBody(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
+EXPORT int32_t SteamAPI_ISteamHTTP_CreateCookieContainer(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamHTTP_ReleaseCookieContainer(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamHTTP_SetCookie(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamHTTP_SetHTTPRequestCookieContainer(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamHTTP_SetHTTPRequestUserAgentInfo(int32_t a0, int32_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamHTTP_SetHTTPRequestRequiresVerifiedCertificate(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamHTTP_SetHTTPRequestAbsoluteTimeoutMS(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamHTTP_GetHTTPRequestWasTimedOut(int32_t a0, int32_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamInput_Init(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInput_Shutdown(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInput_SetInputActionManifestFilePath(int32_t a0, int32_t a1) { return 0; }
+EXPORT void SteamAPI_ISteamInput_RunFrame(int32_t a0, int32_t a1) {  }
+EXPORT int32_t SteamAPI_ISteamInput_BWaitForData(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInput_BNewDataAvailable(int32_t a0) { return 0; }
-EXPORT int32_t SteamAPI_ISteamInput_GetConnectedControllers(int32_t a0, int32_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamInput_GetConnectedControllers(int32_t a0, int32_t a1) { return 0; }
 EXPORT void SteamAPI_ISteamInput_EnableDeviceCallbacks(int32_t a0) {  }
 EXPORT void SteamAPI_ISteamInput_EnableActionEventCallbacks(int32_t a0, int32_t a1) {  }
 EXPORT int64_t SteamAPI_ISteamInput_GetActionSetHandle(int32_t a0, int32_t a1) { return 0; }
@@ -348,14 +381,14 @@ EXPORT int64_t SteamAPI_ISteamInput_GetCurrentActionSet(int32_t a0, int64_t a1) 
 EXPORT void SteamAPI_ISteamInput_ActivateActionSetLayer(int32_t a0, int64_t a1, int64_t a2) {  }
 EXPORT void SteamAPI_ISteamInput_DeactivateActionSetLayer(int32_t a0, int64_t a1, int64_t a2) {  }
 EXPORT void SteamAPI_ISteamInput_DeactivateAllActionSetLayers(int32_t a0, int64_t a1) {  }
-EXPORT int32_t SteamAPI_ISteamInput_GetActiveActionSetLayers(int32_t a0, int64_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int32_t SteamAPI_ISteamInput_GetActiveActionSetLayers(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int64_t SteamAPI_ISteamInput_GetDigitalActionHandle(int32_t a0, int32_t a1) { return 0; }
 EXPORT void SteamAPI_ISteamInput_GetDigitalActionData(void* sret, int32_t a0, int64_t a1, int64_t a2) { memset(sret, 0, 0); }
-EXPORT int32_t SteamAPI_ISteamInput_GetDigitalActionOrigins(int32_t a0, int64_t a1, int64_t a2, int64_t a3, int32_t a4, int32_t a5) { return 0; }
+EXPORT int32_t SteamAPI_ISteamInput_GetDigitalActionOrigins(int32_t a0, int64_t a1, int64_t a2, int64_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInput_GetStringForDigitalActionName(int32_t a0, int64_t a1) { return (int32_t)(intptr_t)web_zero_block; }
 EXPORT int64_t SteamAPI_ISteamInput_GetAnalogActionHandle(int32_t a0, int32_t a1) { return 0; }
 EXPORT void SteamAPI_ISteamInput_GetAnalogActionData(void* sret, int32_t a0, int64_t a1, int64_t a2) { memset(sret, 0, 0); }
-EXPORT int32_t SteamAPI_ISteamInput_GetAnalogActionOrigins(int32_t a0, int64_t a1, int64_t a2, int64_t a3, int32_t a4, int32_t a5) { return 0; }
+EXPORT int32_t SteamAPI_ISteamInput_GetAnalogActionOrigins(int32_t a0, int64_t a1, int64_t a2, int64_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInput_GetGlyphPNGForActionOrigin(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return (int32_t)(intptr_t)web_zero_block; }
 EXPORT int32_t SteamAPI_ISteamInput_GetGlyphSVGForActionOrigin(int32_t a0, int32_t a1, int32_t a2) { return (int32_t)(intptr_t)web_zero_block; }
 EXPORT int32_t SteamAPI_ISteamInput_GetGlyphForActionOrigin_Legacy(int32_t a0, int32_t a1) { return (int32_t)(intptr_t)web_zero_block; }
@@ -382,37 +415,39 @@ EXPORT int32_t SteamAPI_ISteamInput_GetRemotePlaySessionID(int32_t a0, int64_t a
 EXPORT int32_t SteamAPI_ISteamInput_GetSessionInputConfigurationSettings(int32_t a0) { return 0; }
 EXPORT void SteamAPI_ISteamInput_SetDualSenseTriggerEffect(int32_t a0, int64_t a1, int32_t a2) {  }
 EXPORT int32_t SteamAPI_ISteamInventory_GetResultStatus(int32_t a0, int32_t a1) { return 0; }
-EXPORT int32_t SteamAPI_ISteamInventory_GetResultItems(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
+EXPORT int32_t SteamAPI_ISteamInventory_GetResultItems(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_GetResultItemProperty(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_GetResultTimestamp(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_CheckResultSteamID(int32_t a0, int32_t a1, int64_t a2) { return 0; }
 EXPORT void SteamAPI_ISteamInventory_DestroyResult(int32_t a0, int32_t a1) {  }
 EXPORT int32_t SteamAPI_ISteamInventory_GetAllItems(int32_t a0, int32_t a1) { return 0; }
-EXPORT int32_t SteamAPI_ISteamInventory_GetItemsByID(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
+EXPORT int32_t SteamAPI_ISteamInventory_GetItemsByID(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_SerializeResult(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
-EXPORT int32_t SteamAPI_ISteamInventory_GenerateItems(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5, int32_t a6) { return 0; }
+EXPORT int32_t SteamAPI_ISteamInventory_DeserializeResult(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
+EXPORT int32_t SteamAPI_ISteamInventory_GenerateItems(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_GrantPromoItems(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_AddPromoItem(int32_t a0, int32_t a1, int32_t a2) { return 0; }
-EXPORT int32_t SteamAPI_ISteamInventory_AddPromoItems(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
+EXPORT int32_t SteamAPI_ISteamInventory_AddPromoItems(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_ConsumeItem(int32_t a0, int32_t a1, int64_t a2, int32_t a3) { return 0; }
-EXPORT int32_t SteamAPI_ISteamInventory_ExchangeItems(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5, int32_t a6, int32_t a7, int32_t a8, int32_t a9, int32_t a10, int32_t a11) { return 0; }
+EXPORT int32_t SteamAPI_ISteamInventory_ExchangeItems(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5, int32_t a6, int32_t a7) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_TransferItemQuantity(int32_t a0, int32_t a1, int64_t a2, int32_t a3, int64_t a4) { return 0; }
 EXPORT void SteamAPI_ISteamInventory_SendItemDropHeartbeat(int32_t a0) {  }
 EXPORT int32_t SteamAPI_ISteamInventory_TriggerItemDrop(int32_t a0, int32_t a1, int32_t a2) { return 0; }
-EXPORT int32_t SteamAPI_ISteamInventory_TradeItems(int32_t a0, int32_t a1, int64_t a2, int32_t a3, int32_t a4, int32_t a5, int32_t a6, int32_t a7, int32_t a8, int32_t a9, int32_t a10, int32_t a11, int32_t a12) { return 0; }
+EXPORT int32_t SteamAPI_ISteamInventory_TradeItems(int32_t a0, int32_t a1, int64_t a2, int32_t a3, int32_t a4, int32_t a5, int32_t a6, int32_t a7, int32_t a8) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_LoadItemDefinitions(int32_t a0) { return 0; }
-EXPORT int32_t SteamAPI_ISteamInventory_GetItemDefinitionIDs(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int32_t SteamAPI_ISteamInventory_GetItemDefinitionIDs(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_GetItemDefinitionProperty(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int64_t SteamAPI_ISteamInventory_RequestEligiblePromoItemDefinitionsIDs(int32_t a0, int64_t a1) { return 0; }
-EXPORT int32_t SteamAPI_ISteamInventory_GetEligiblePromoItemDefinitionIDs(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
-EXPORT int64_t SteamAPI_ISteamInventory_StartPurchase(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
+EXPORT int32_t SteamAPI_ISteamInventory_GetEligiblePromoItemDefinitionIDs(int32_t a0, int64_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int64_t SteamAPI_ISteamInventory_StartPurchase(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int64_t SteamAPI_ISteamInventory_RequestPrices(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_GetNumItemsWithPrices(int32_t a0) { return 0; }
-EXPORT int32_t SteamAPI_ISteamInventory_GetItemsWithPrices(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5, int32_t a6, int32_t a7) { return 0; }
+EXPORT int32_t SteamAPI_ISteamInventory_GetItemsWithPrices(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_GetItemPrice(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int64_t SteamAPI_ISteamInventory_StartUpdateProperties(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_RemoveProperty(int32_t a0, int64_t a1, int64_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_SetPropertyString(int32_t a0, int64_t a1, int64_t a2, int32_t a3, int32_t a4) { return 0; }
+EXPORT int32_t SteamAPI_ISteamInventory_SetPropertyBool(int32_t a0, int64_t a1, int64_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_SetPropertyInt64(int32_t a0, int64_t a1, int64_t a2, int32_t a3, int64_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_SetPropertyFloat(int32_t a0, int64_t a1, int64_t a2, int32_t a3, float a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamInventory_SubmitUpdateProperties(int32_t a0, int64_t a1, int32_t a2) { return 0; }
@@ -451,6 +486,7 @@ EXPORT int32_t SteamAPI_ISteamMatchmaking_GetLobbyGameServer(int32_t a0, int64_t
 EXPORT int32_t SteamAPI_ISteamMatchmaking_SetLobbyMemberLimit(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamMatchmaking_GetLobbyMemberLimit(int32_t a0, int64_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamMatchmaking_SetLobbyType(int32_t a0, int64_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamMatchmaking_SetLobbyJoinable(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int64_t SteamAPI_ISteamMatchmaking_GetLobbyOwner(int32_t a0, int64_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamMatchmaking_SetLobbyOwner(int32_t a0, int64_t a1, int64_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamMatchmaking_SetLinkedLobby(int32_t a0, int64_t a1, int64_t a2) { return 0; }
@@ -491,7 +527,7 @@ EXPORT int64_t SteamAPI_ISteamParties_GetBeaconByIndex(int32_t a0, int32_t a1) {
 EXPORT int32_t SteamAPI_ISteamParties_GetBeaconDetails(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
 EXPORT int64_t SteamAPI_ISteamParties_JoinParty(int32_t a0, int64_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamParties_GetNumAvailableBeaconLocations(int32_t a0, int32_t a1) { return 0; }
-EXPORT int32_t SteamAPI_ISteamParties_GetAvailableBeaconLocations(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int32_t SteamAPI_ISteamParties_GetAvailableBeaconLocations(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int64_t SteamAPI_ISteamParties_CreateBeacon(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT void SteamAPI_ISteamParties_OnReservationCompleted(int32_t a0, int64_t a1, int64_t a2) {  }
 EXPORT void SteamAPI_ISteamParties_CancelReservation(int32_t a0, int64_t a1, int64_t a2) {  }
@@ -510,11 +546,21 @@ EXPORT float SteamAPI_ISteamMusic_GetVolume(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_ISteamMusicRemote_RegisterSteamMusicRemote(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamMusicRemote_DeregisterSteamMusicRemote(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_ISteamMusicRemote_BIsCurrentMusicRemote(int32_t a0) { return 0; }
+EXPORT int32_t SteamAPI_ISteamMusicRemote_BActivationSuccess(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamMusicRemote_SetDisplayName(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamMusicRemote_SetPNGIcon_64x64(int32_t a0, int32_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamMusicRemote_EnablePlayPrevious(int32_t a0, int32_t a1) { return 0; }
+EXPORT int32_t SteamAPI_ISteamMusicRemote_EnablePlayNext(int32_t a0, int32_t a1) { return 0; }
+EXPORT int32_t SteamAPI_ISteamMusicRemote_EnableShuffled(int32_t a0, int32_t a1) { return 0; }
+EXPORT int32_t SteamAPI_ISteamMusicRemote_EnableLooped(int32_t a0, int32_t a1) { return 0; }
+EXPORT int32_t SteamAPI_ISteamMusicRemote_EnableQueue(int32_t a0, int32_t a1) { return 0; }
+EXPORT int32_t SteamAPI_ISteamMusicRemote_EnablePlaylists(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamMusicRemote_UpdatePlaybackStatus(int32_t a0, int32_t a1) { return 0; }
+EXPORT int32_t SteamAPI_ISteamMusicRemote_UpdateShuffled(int32_t a0, int32_t a1) { return 0; }
+EXPORT int32_t SteamAPI_ISteamMusicRemote_UpdateLooped(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamMusicRemote_UpdateVolume(int32_t a0, float a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamMusicRemote_CurrentEntryWillChange(int32_t a0) { return 0; }
+EXPORT int32_t SteamAPI_ISteamMusicRemote_CurrentEntryIsAvailable(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamMusicRemote_UpdateCurrentEntryText(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamMusicRemote_UpdateCurrentEntryElapsedSeconds(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamMusicRemote_UpdateCurrentEntryCoverArt(int32_t a0, int32_t a1, int32_t a2) { return 0; }
@@ -536,7 +582,13 @@ EXPORT int32_t SteamAPI_ISteamNetworking_AcceptP2PSessionWithUser(int32_t a0, in
 EXPORT int32_t SteamAPI_ISteamNetworking_CloseP2PSessionWithUser(int32_t a0, int64_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworking_CloseP2PChannelWithUser(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworking_GetP2PSessionState(int32_t a0, int64_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworking_AllowP2PPacketRelay(int32_t a0, int32_t a1) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworking_CreateListenSocket(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworking_CreateP2PConnectionSocket(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworking_CreateConnectionSocket(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworking_DestroySocket(int32_t a0, int32_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworking_DestroyListenSocket(int32_t a0, int32_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworking_SendDataOnSocket(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworking_IsDataAvailableOnSocket(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworking_RetrieveDataFromSocket(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworking_IsDataAvailable(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
@@ -546,29 +598,31 @@ EXPORT int32_t SteamAPI_ISteamNetworking_GetListenSocketInfo(int32_t a0, int32_t
 EXPORT int32_t SteamAPI_ISteamNetworking_GetSocketConnectionType(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworking_GetMaxPacketSize(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingMessages_SendMessageToUser(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
-EXPORT int32_t SteamAPI_ISteamNetworkingMessages_ReceiveMessagesOnChannel(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworkingMessages_ReceiveMessagesOnChannel(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingMessages_AcceptSessionWithUser(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingMessages_CloseSessionWithUser(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingMessages_CloseChannelWithUser(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingMessages_GetSessionConnectionInfo(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
-EXPORT int32_t SteamAPI_ISteamNetworkingSockets_CreateListenSocketIP(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
-EXPORT int32_t SteamAPI_ISteamNetworkingSockets_ConnectByIPAddress(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
-EXPORT int32_t SteamAPI_ISteamNetworkingSockets_CreateListenSocketP2P(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
-EXPORT int32_t SteamAPI_ISteamNetworkingSockets_ConnectP2P(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworkingSockets_CreateListenSocketIP(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworkingSockets_ConnectByIPAddress(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworkingSockets_CreateListenSocketP2P(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworkingSockets_ConnectP2P(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_AcceptConnection(int32_t a0, int32_t a1) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworkingSockets_CloseConnection(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_CloseListenSocket(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_SetConnectionUserData(int32_t a0, int32_t a1, int64_t a2) { return 0; }
 EXPORT int64_t SteamAPI_ISteamNetworkingSockets_GetConnectionUserData(int32_t a0, int32_t a1) { return 0; }
 EXPORT void SteamAPI_ISteamNetworkingSockets_SetConnectionName(int32_t a0, int32_t a1, int32_t a2) {  }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_GetConnectionName(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_SendMessageToConnection(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
-EXPORT void SteamAPI_ISteamNetworkingSockets_SendMessages(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) {  }
+EXPORT void SteamAPI_ISteamNetworkingSockets_SendMessages(int32_t a0, int32_t a1, int32_t a2, int32_t a3) {  }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_FlushMessagesOnConnection(int32_t a0, int32_t a1) { return 0; }
-EXPORT int32_t SteamAPI_ISteamNetworkingSockets_ReceiveMessagesOnConnection(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworkingSockets_ReceiveMessagesOnConnection(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_GetConnectionInfo(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_GetConnectionRealTimeStatus(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_GetDetailedConnectionStatus(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_GetListenSocketAddress(int32_t a0, int32_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworkingSockets_CreateSocketPair(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_ConfigureConnectionLanes(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_GetIdentity(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_InitAuthentication(int32_t a0) { return 0; }
@@ -576,16 +630,16 @@ EXPORT int32_t SteamAPI_ISteamNetworkingSockets_GetAuthenticationStatus(int32_t 
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_CreatePollGroup(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_DestroyPollGroup(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_SetConnectionPollGroup(int32_t a0, int32_t a1, int32_t a2) { return 0; }
-EXPORT int32_t SteamAPI_ISteamNetworkingSockets_ReceiveMessagesOnPollGroup(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworkingSockets_ReceiveMessagesOnPollGroup(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_ReceivedRelayAuthTicket(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_FindRelayAuthTicketForServer(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
-EXPORT int32_t SteamAPI_ISteamNetworkingSockets_ConnectToHostedDedicatedServer(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworkingSockets_ConnectToHostedDedicatedServer(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_GetHostedDedicatedServerPort(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_GetHostedDedicatedServerPOPID(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_GetHostedDedicatedServerAddress(int32_t a0, int32_t a1) { return 0; }
-EXPORT int32_t SteamAPI_ISteamNetworkingSockets_CreateHostedDedicatedServerListenSocket(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworkingSockets_CreateHostedDedicatedServerListenSocket(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_GetGameCoordinatorServerLogin(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
-EXPORT int32_t SteamAPI_ISteamNetworkingSockets_ConnectP2PCustomSignaling(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5, int32_t a6) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworkingSockets_ConnectP2PCustomSignaling(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_ReceivedP2PCustomSignal(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_GetCertificateRequest(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_SetCertificate(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
@@ -593,7 +647,7 @@ EXPORT void SteamAPI_ISteamNetworkingSockets_ResetIdentity(int32_t a0, int32_t a
 EXPORT void SteamAPI_ISteamNetworkingSockets_RunCallbacks(int32_t a0) {  }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_BeginAsyncRequestFakeIP(int32_t a0, int32_t a1) { return 0; }
 EXPORT void SteamAPI_ISteamNetworkingSockets_GetFakeIP(int32_t a0, int32_t a1, int32_t a2) {  }
-EXPORT int32_t SteamAPI_ISteamNetworkingSockets_CreateListenSocketP2PFakeIP(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
+EXPORT int32_t SteamAPI_ISteamNetworkingSockets_CreateListenSocketP2PFakeIP(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_GetRemoteFakeIPForConnection(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingSockets_CreateFakeUDPPort(int32_t a0, int32_t a1) { return (int32_t)(intptr_t)web_zero_block; }
 EXPORT int32_t SteamAPI_ISteamNetworkingUtils_AllocateMessage(int32_t a0, int32_t a1) { return (int32_t)(intptr_t)web_zero_block; }
@@ -617,6 +671,8 @@ EXPORT int32_t SteamAPI_ISteamNetworkingUtils_GetRealIdentityForFakeIP(int32_t a
 EXPORT int32_t SteamAPI_ISteamNetworkingUtils_SetConfigValue(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingUtils_GetConfigValue(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5, int32_t a6) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingUtils_GetConfigValueInfo(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return (int32_t)(intptr_t)web_zero_block; }
+EXPORT int32_t SteamAPI_ISteamNetworkingUtils_IterateGenericEditableConfigValues(int32_t a0, int32_t a1, int32_t a2) { return 0; }
+EXPORT void SteamAPI_ISteamNetworkingUtils_SteamNetworkingIPAddr_ToString(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) {  }
 EXPORT int32_t SteamAPI_ISteamNetworkingUtils_SteamNetworkingIPAddr_ParseString(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamNetworkingUtils_SteamNetworkingIPAddr_GetFakeIPType(int32_t a0, int32_t a1) { return 0; }
 EXPORT void SteamAPI_ISteamNetworkingUtils_SteamNetworkingIdentity_ToString(int32_t a0, int32_t a1, int32_t a2, int32_t a3) {  }
@@ -657,6 +713,7 @@ EXPORT int32_t SteamAPI_ISteamRemoteStorage_GetFileNameAndSize(int32_t a0, int32
 EXPORT int32_t SteamAPI_ISteamRemoteStorage_GetQuota(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamRemoteStorage_IsCloudEnabledForAccount(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_ISteamRemoteStorage_IsCloudEnabledForApp(int32_t a0) { return 0; }
+EXPORT void SteamAPI_ISteamRemoteStorage_SetCloudEnabledForApp(int32_t a0, int32_t a1) {  }
 EXPORT int64_t SteamAPI_ISteamRemoteStorage_UGCDownload(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamRemoteStorage_GetUGCDownloadProgress(int32_t a0, int64_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamRemoteStorage_GetUGCDetails(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
@@ -680,6 +737,7 @@ EXPORT int64_t SteamAPI_ISteamRemoteStorage_EnumerateUserSubscribedFiles(int32_t
 EXPORT int64_t SteamAPI_ISteamRemoteStorage_UnsubscribePublishedFile(int32_t a0, int64_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamRemoteStorage_UpdatePublishedFileSetChangeDescription(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int64_t SteamAPI_ISteamRemoteStorage_GetPublishedItemVoteDetails(int32_t a0, int64_t a1) { return 0; }
+EXPORT int64_t SteamAPI_ISteamRemoteStorage_UpdateUserPublishedItemVote(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int64_t SteamAPI_ISteamRemoteStorage_GetUserPublishedItemVoteDetails(int32_t a0, int64_t a1) { return 0; }
 EXPORT int64_t SteamAPI_ISteamRemoteStorage_EnumerateUserSharedWorkshopFiles(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int64_t SteamAPI_ISteamRemoteStorage_PublishVideo(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5, int32_t a6, int32_t a7, int32_t a8, int32_t a9) { return 0; }
@@ -694,6 +752,7 @@ EXPORT int32_t SteamAPI_ISteamRemoteStorage_EndFileWriteBatch(int32_t a0) { retu
 EXPORT int32_t SteamAPI_ISteamScreenshots_WriteScreenshot(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamScreenshots_AddScreenshotToLibrary(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT void SteamAPI_ISteamScreenshots_TriggerScreenshot(int32_t a0) {  }
+EXPORT void SteamAPI_ISteamScreenshots_HookScreenshots(int32_t a0, int32_t a1) {  }
 EXPORT int32_t SteamAPI_ISteamScreenshots_SetLocation(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamScreenshots_TagUser(int32_t a0, int32_t a1, int64_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamScreenshots_TagPublishedFile(int32_t a0, int32_t a1, int64_t a2) { return 0; }
@@ -702,7 +761,7 @@ EXPORT int32_t SteamAPI_ISteamScreenshots_AddVRScreenshotToLibrary(int32_t a0, i
 EXPORT int64_t SteamAPI_ISteamUGC_CreateQueryUserUGCRequest(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5, int32_t a6, int32_t a7) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUGC_CreateQueryAllUGCRequestPage(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUGC_CreateQueryAllUGCRequestCursor(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
-EXPORT int64_t SteamAPI_ISteamUGC_CreateQueryUGCDetailsRequest(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int64_t SteamAPI_ISteamUGC_CreateQueryUGCDetailsRequest(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUGC_SendQueryUGCRequest(int32_t a0, int64_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_GetQueryUGCResult(int32_t a0, int64_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_GetQueryUGCNumTags(int32_t a0, int64_t a1, int32_t a2) { return 0; }
@@ -710,7 +769,7 @@ EXPORT int32_t SteamAPI_ISteamUGC_GetQueryUGCTag(int32_t a0, int64_t a1, int32_t
 EXPORT int32_t SteamAPI_ISteamUGC_GetQueryUGCTagDisplayName(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_GetQueryUGCPreviewURL(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_GetQueryUGCMetadata(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
-EXPORT int32_t SteamAPI_ISteamUGC_GetQueryUGCChildren(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUGC_GetQueryUGCChildren(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_GetQueryUGCStatistic(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_GetQueryUGCNumAdditionalPreviews(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_GetQueryUGCAdditionalPreview(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5, int32_t a6, int32_t a7, int32_t a8) { return 0; }
@@ -722,10 +781,18 @@ EXPORT int32_t SteamAPI_ISteamUGC_ReleaseQueryUGCRequest(int32_t a0, int64_t a1)
 EXPORT int32_t SteamAPI_ISteamUGC_AddRequiredTag(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_AddRequiredTagGroup(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_AddExcludedTag(int32_t a0, int64_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUGC_SetReturnOnlyIDs(int32_t a0, int64_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUGC_SetReturnKeyValueTags(int32_t a0, int64_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUGC_SetReturnLongDescription(int32_t a0, int64_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUGC_SetReturnMetadata(int32_t a0, int64_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUGC_SetReturnChildren(int32_t a0, int64_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUGC_SetReturnAdditionalPreviews(int32_t a0, int64_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUGC_SetReturnTotalOnly(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_SetReturnPlaytimeStats(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_SetLanguage(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_SetAllowCachedResponse(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_SetCloudFileNameFilter(int32_t a0, int64_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUGC_SetMatchAnyTag(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_SetSearchText(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_SetRankedByTrendDays(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_SetTimeCreatedDateRange(int32_t a0, int64_t a1, int32_t a2, int32_t a3) { return 0; }
@@ -742,6 +809,7 @@ EXPORT int32_t SteamAPI_ISteamUGC_SetItemVisibility(int32_t a0, int64_t a1, int3
 EXPORT int32_t SteamAPI_ISteamUGC_SetItemTags(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_SetItemContent(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_SetItemPreview(int32_t a0, int64_t a1, int32_t a2) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUGC_SetAllowLegacyUpload(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_RemoveAllItemKeyValueTags(int32_t a0, int64_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_RemoveItemKeyValueTags(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_AddItemKeyValueTag(int32_t a0, int64_t a1, int32_t a2, int32_t a3) { return 0; }
@@ -754,19 +822,22 @@ EXPORT int32_t SteamAPI_ISteamUGC_AddContentDescriptor(int32_t a0, int64_t a1, i
 EXPORT int32_t SteamAPI_ISteamUGC_RemoveContentDescriptor(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUGC_SubmitItemUpdate(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_GetItemUpdateProgress(int32_t a0, int64_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int64_t SteamAPI_ISteamUGC_SetUserItemVote(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUGC_GetUserItemVote(int32_t a0, int64_t a1) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUGC_AddItemToFavorites(int32_t a0, int32_t a1, int64_t a2) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUGC_RemoveItemFromFavorites(int32_t a0, int32_t a1, int64_t a2) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUGC_SubscribeItem(int32_t a0, int64_t a1) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUGC_UnsubscribeItem(int32_t a0, int64_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_GetNumSubscribedItems(int32_t a0) { return 0; }
-EXPORT int32_t SteamAPI_ISteamUGC_GetSubscribedItems(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUGC_GetSubscribedItems(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_GetItemState(int32_t a0, int64_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_GetItemInstallInfo(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_GetItemDownloadInfo(int32_t a0, int64_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUGC_DownloadItem(int32_t a0, int64_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUGC_BInitWorkshopForGameServer(int32_t a0, int32_t a1, int32_t a2) { return 0; }
-EXPORT int64_t SteamAPI_ISteamUGC_StartPlaytimeTracking(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
-EXPORT int64_t SteamAPI_ISteamUGC_StopPlaytimeTracking(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT void SteamAPI_ISteamUGC_SuspendDownloads(int32_t a0, int32_t a1) {  }
+EXPORT int64_t SteamAPI_ISteamUGC_StartPlaytimeTracking(int32_t a0, int32_t a1, int32_t a2) { return 0; }
+EXPORT int64_t SteamAPI_ISteamUGC_StopPlaytimeTracking(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUGC_StopPlaytimeTrackingForAllItems(int32_t a0) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUGC_AddDependency(int32_t a0, int64_t a1, int64_t a2) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUGC_RemoveDependency(int32_t a0, int64_t a1, int64_t a2) { return 0; }
@@ -779,12 +850,14 @@ EXPORT int64_t SteamAPI_ISteamUGC_GetWorkshopEULAStatus(int32_t a0) { return 0; 
 EXPORT int32_t SteamAPI_ISteamUser_GetHSteamUser(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUser_BLoggedOn(int32_t a0) { return 1; }
 EXPORT int64_t SteamAPI_ISteamUser_GetSteamID(int32_t a0) { return WEB_STEAM_ID; }
+EXPORT int32_t SteamAPI_ISteamUser_InitiateGameConnection_DEPRECATED(int32_t a0, int32_t a1, int32_t a2, int64_t a3, int32_t a4, int32_t a5, int32_t a6) { return 0; }
 EXPORT void SteamAPI_ISteamUser_TerminateGameConnection_DEPRECATED(int32_t a0, int32_t a1, int32_t a2) {  }
 EXPORT void SteamAPI_ISteamUser_TrackAppUsageEvent(int32_t a0, int32_t a1, int32_t a2, int32_t a3) {  }
 EXPORT int32_t SteamAPI_ISteamUser_GetUserDataFolder(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT void SteamAPI_ISteamUser_StartVoiceRecording(int32_t a0) {  }
 EXPORT void SteamAPI_ISteamUser_StopVoiceRecording(int32_t a0) {  }
 EXPORT int32_t SteamAPI_ISteamUser_GetAvailableVoice(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUser_GetVoice(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5, int32_t a6, int32_t a7, int32_t a8, int32_t a9) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUser_DecompressVoice(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5, int32_t a6) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUser_GetVoiceOptimalSampleRate(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUser_GetAuthSessionTicket(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
@@ -797,6 +870,7 @@ EXPORT int32_t SteamAPI_ISteamUser_BIsBehindNAT(int32_t a0) { return 0; }
 EXPORT void SteamAPI_ISteamUser_AdvertiseGame(int32_t a0, int64_t a1, int32_t a2, int32_t a3) {  }
 EXPORT int64_t SteamAPI_ISteamUser_RequestEncryptedAppTicket(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUser_GetEncryptedAppTicket(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUser_GetGameBadgeLevel(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUser_GetPlayerSteamLevel(int32_t a0) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUser_RequestStoreAuthURL(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUser_BIsPhoneVerified(int32_t a0) { return 0; }
@@ -827,6 +901,7 @@ EXPORT int32_t SteamAPI_ISteamUserStats_GetUserStatInt32(int32_t a0, int64_t a1,
 EXPORT int32_t SteamAPI_ISteamUserStats_GetUserStatFloat(int32_t a0, int64_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUserStats_GetUserAchievement(int32_t a0, int64_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUserStats_GetUserAchievementAndUnlockTime(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUserStats_ResetAllStats(int32_t a0, int32_t a1) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUserStats_FindOrCreateLeaderboard(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUserStats_FindLeaderboard(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUserStats_GetLeaderboardName(int32_t a0, int64_t a1) { return (int32_t)(intptr_t)web_zero_block; }
@@ -834,9 +909,9 @@ EXPORT int32_t SteamAPI_ISteamUserStats_GetLeaderboardEntryCount(int32_t a0, int
 EXPORT int32_t SteamAPI_ISteamUserStats_GetLeaderboardSortMethod(int32_t a0, int64_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUserStats_GetLeaderboardDisplayType(int32_t a0, int64_t a1) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUserStats_DownloadLeaderboardEntries(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
-EXPORT int64_t SteamAPI_ISteamUserStats_DownloadLeaderboardEntriesForUsers(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
-EXPORT int32_t SteamAPI_ISteamUserStats_GetDownloadedLeaderboardEntry(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5, int32_t a6) { return 0; }
-EXPORT int64_t SteamAPI_ISteamUserStats_UploadLeaderboardScore(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5, int32_t a6) { return 0; }
+EXPORT int64_t SteamAPI_ISteamUserStats_DownloadLeaderboardEntriesForUsers(int32_t a0, int64_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUserStats_GetDownloadedLeaderboardEntry(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
+EXPORT int64_t SteamAPI_ISteamUserStats_UploadLeaderboardScore(int32_t a0, int64_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUserStats_AttachLeaderboardUGC(int32_t a0, int64_t a1, int64_t a2) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUserStats_GetNumberOfCurrentPlayers(int32_t a0) { return 0; }
 EXPORT int64_t SteamAPI_ISteamUserStats_RequestGlobalAchievementPercentages(int32_t a0) { return 0; }
@@ -846,8 +921,8 @@ EXPORT int32_t SteamAPI_ISteamUserStats_GetAchievementAchievedPercent(int32_t a0
 EXPORT int64_t SteamAPI_ISteamUserStats_RequestGlobalStats(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUserStats_GetGlobalStatInt64(int32_t a0, int32_t a1, int32_t a2) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUserStats_GetGlobalStatDouble(int32_t a0, int32_t a1, int32_t a2) { return 0; }
-EXPORT int32_t SteamAPI_ISteamUserStats_GetGlobalStatHistoryInt64(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
-EXPORT int32_t SteamAPI_ISteamUserStats_GetGlobalStatHistoryDouble(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUserStats_GetGlobalStatHistoryInt64(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
+EXPORT int32_t SteamAPI_ISteamUserStats_GetGlobalStatHistoryDouble(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUserStats_GetAchievementProgressLimitsInt32(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUserStats_GetAchievementProgressLimitsFloat(int32_t a0, int32_t a1, int32_t a2, int32_t a3) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUtils_GetSecondsSinceAppActive(int32_t a0) { return 0; }
@@ -877,12 +952,14 @@ EXPORT void SteamAPI_ISteamUtils_SetOverlayNotificationInset(int32_t a0, int32_t
 EXPORT int32_t SteamAPI_ISteamUtils_IsSteamInBigPictureMode(int32_t a0) { return 0; }
 EXPORT void SteamAPI_ISteamUtils_StartVRDashboard(int32_t a0) {  }
 EXPORT int32_t SteamAPI_ISteamUtils_IsVRHeadsetStreamingEnabled(int32_t a0) { return 0; }
+EXPORT void SteamAPI_ISteamUtils_SetVRHeadsetStreamingEnabled(int32_t a0, int32_t a1) {  }
 EXPORT int32_t SteamAPI_ISteamUtils_IsSteamChinaLauncher(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUtils_InitFilterText(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUtils_FilterText(int32_t a0, int32_t a1, int64_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUtils_GetIPv6ConnectivityState(int32_t a0, int32_t a1) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUtils_IsSteamRunningOnSteamDeck(int32_t a0) { return 0; }
 EXPORT int32_t SteamAPI_ISteamUtils_ShowFloatingGamepadTextInput(int32_t a0, int32_t a1, int32_t a2, int32_t a3, int32_t a4, int32_t a5) { return 0; }
+EXPORT void SteamAPI_ISteamUtils_SetGameLauncherMode(int32_t a0, int32_t a1) {  }
 EXPORT int32_t SteamAPI_ISteamUtils_DismissFloatingGamepadTextInput(int32_t a0) { return 0; }
 EXPORT void SteamAPI_ISteamVideo_GetVideoURL(int32_t a0, int32_t a1) {  }
 EXPORT int32_t SteamAPI_ISteamVideo_IsBroadcasting(int32_t a0, int32_t a1) { return 0; }

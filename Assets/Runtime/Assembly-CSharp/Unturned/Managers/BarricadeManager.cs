@@ -1745,7 +1745,7 @@ namespace SDG.Unturned
 			{
 				if (asset.eligibleForPooling)
 				{
-					int prefabKey = asset.barricade.GetInstanceID();
+					int prefabKey = asset.barricade.GetStableId();
 					Stack<GameObject> instances = pool.GetOrAddNew(prefabKey);
 					while (instances.Count > 0)
 					{
@@ -3479,7 +3479,7 @@ namespace SDG.Unturned
 
 				instance.SetActive(false);
 				instanceTransform.parent = null;
-				int prefabKey = asset.barricade.GetInstanceID();
+				int prefabKey = asset.barricade.GetStableId();
 				Stack<GameObject> instances = pool.GetOrAddNew(prefabKey);
 				instances.Push(instance);
 			}

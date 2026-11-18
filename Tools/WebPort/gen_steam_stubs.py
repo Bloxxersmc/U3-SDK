@@ -83,9 +83,9 @@ def min_size(t, seen=()):
 
 nm = open(os.path.join(SW, "autogen", "NativeMethods.cs"), encoding="utf-8-sig").read()
 decl = re.compile(
-    r'\[DllImport\(\w+,\s*EntryPoint\s*=\s*"(\w+)"[^\]]*\]\s*'
+    r'\[DllImport\(\w+(?:,\s*EntryPoint\s*=\s*"(\w+)")?[^\]]*\]\s*'
     r'(?:\[return:[^\]]*\]\s*)?'
-    r'public static extern ([\w\.\[\]]+) (\w+)\(([^)]*)\);', re.S)
+    r'public static extern ([\w\.\[\]]+) (\w+)\(((?:[^()]|\([^()]*\))*)\);', re.S)
 
 OVERRIDES = {
     "SteamAPI_Init": "return 1;",
@@ -111,13 +111,14 @@ OVERRIDES = {
 
 seen, out, stats = set(), [], {"sret": 0, "total": 0}
 for entry, ret, csname, params in decl.findall(nm):
+    entry = entry or csname  # without EntryPoint the native name is the C# method name
     if entry in seen:
         continue
     seen.add(entry)
     stats["total"] += 1
     args = []
+    params = re.sub(r"\[[^\]]*\]\s*", "", params)  # attributes may contain commas/parens
     for i, p in enumerate(filter(None, (x.strip() for x in params.split(",")))):
-        p = re.sub(r"\[[^\]]*\]\s*", "", p)
         toks = p.split()
         if toks[0] in ("ref", "out", "in"):
             k = "i32"

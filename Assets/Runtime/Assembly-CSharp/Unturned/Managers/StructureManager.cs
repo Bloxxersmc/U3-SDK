@@ -567,8 +567,8 @@ namespace SDG.Unturned
 					rb.useGravity = true;
 					rb.isKinematic = false;
 					rb.AddForce(ragdoll);
-					rb.drag = 0.5f;
-					rb.angularDrag = 0.1f;
+					rb.linearDamping = 0.5f;
+					rb.angularDamping = 0.1f;
 					debrisTransform.localScale *= 0.75f;
 
 					Destroy(debrisGameObject, 8f);
@@ -667,7 +667,7 @@ namespace SDG.Unturned
 			{
 				if (asset.eligibleForPooling)
 				{
-					int prefabKey = asset.structure.GetInstanceID();
+					int prefabKey = asset.structure.GetStableId();
 					Stack<GameObject> instances = pool.GetOrAddNew(prefabKey);
 					while (instances.Count > 0)
 					{
@@ -1493,7 +1493,7 @@ namespace SDG.Unturned
 			if (drop.asset.eligibleForPooling)
 			{
 				drop.model.gameObject.SetActive(false);
-				int prefabKey = drop.asset.structure.GetInstanceID();
+				int prefabKey = drop.asset.structure.GetStableId();
 				Stack<GameObject> instances = pool.GetOrAddNew(prefabKey);
 				instances.Push(drop.model.gameObject);
 			}

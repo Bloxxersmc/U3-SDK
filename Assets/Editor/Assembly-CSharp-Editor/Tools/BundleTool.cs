@@ -74,6 +74,11 @@ namespace SDG.Unturned.Tools
 		{
 			if (path.Length > 0 && selection.Length > 0)
 			{
+#if UNITY_6000_0_OR_NEWER
+				// Legacy BuildPipeline.BuildAssetBundle was removed in Unity 6.
+				Debug.LogError("Legacy asset bundles can't be built with Unity 6; use Unity 2022.3 for this tool.");
+				return;
+#else
 #pragma warning disable 0618
 				if (!BuildPipeline.BuildAssetBundle(selection[0], selection, path, BuildAssetBundleOptions.UncompressedAssetBundle, BuildTarget.StandaloneWindows))
 				{
@@ -81,6 +86,7 @@ namespace SDG.Unturned.Tools
 					return;
 				}
 #pragma warning restore 0618
+#endif
 
 				Debug.Log("Successfully built bundle for \"" + focus.name + "\"!");
 
